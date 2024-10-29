@@ -77,16 +77,19 @@ class HeaderWidget extends StatelessWidget {
             left: 354,
             top: 78,
             child: Material(
+              type: MaterialType.transparency,
               child: InkWell(
                 onTap: () {},
+                overlayColor: MaterialStateProperty.all(
+                  Color(0x07F7F),
+                ),
                 child: Ink(
                   width: 31,
                   height: 31,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/icons/messages.png'),
-                    ),
-                  ),
+                  decoration: const BoxDecoration(
+                      image: DecorationImage(
+                    image: AssetImage('assets/icons/message.png'),
+                  )),
                 ),
               ),
             ),
