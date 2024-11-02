@@ -81,7 +81,7 @@ class AuthController {
             await sharedPreferences.setString('auth_token', token);
 
             //Encode the user data recived from the backend as json
-            final userJson = jsonDecode(jsonDecode(response.body)['user']);
+            final userJson = jsonEncode(jsonDecode(response.body)['user']);
 
             //Update the application state with the user data using Riverpod
             providerContainer.read(userProvider.notifier).setUser(userJson);

@@ -36,41 +36,31 @@ class _MainScreenState extends State<MainScreen> {
             });
           },
           type: BottomNavigationBarType.fixed,
-          items: [
+          items: const [
             BottomNavigationBarItem(
-                icon: Image.asset(
-                  "assets/icons/home.png",
-                  width: 25,
-                ),
-                label: "Trang chủ"),
+              icon: Icon(Icons.home),
+              label: "Trang chủ",
+            ),
             BottomNavigationBarItem(
-                icon: Image.asset(
-                  "assets/icons/love.png",
-                  width: 25,
-                ),
-                label: "Yêu thích"),
-            const BottomNavigationBarItem(
+              icon: Icon(Icons.favorite),
+              label: "Yêu thích",
+            ),
+            BottomNavigationBarItem(
               icon: Icon(Icons.category),
               label: "Thể loại",
             ),
             BottomNavigationBarItem(
-                icon: Image.asset(
-                  "assets/icons/mart.png",
-                  width: 25,
-                ),
-                label: "Cửa hàng"),
+              icon: Icon(Icons.store),
+              label: "Cửa hàng",
+            ),
             BottomNavigationBarItem(
-                icon: Image.asset(
-                  "assets/icons/cart.png",
-                  width: 25,
-                ),
-                label: "Giỏ hàng"),
+              icon: Icon(Icons.shop),
+              label: "Giỏ hàng",
+            ),
             BottomNavigationBarItem(
-                icon: Image.asset(
-                  "assets/icons/account.png",
-                  width: 25,
-                ),
-                label: "Tài khoản")
+              icon: Icon(Icons.person),
+              label: "Tài khoản",
+            )
           ]),
       body: _pages[_pageIndex],
     );

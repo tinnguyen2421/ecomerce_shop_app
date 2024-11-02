@@ -1,9 +1,13 @@
+import 'package:ecomerce_shop_app/controllers/product_controller.dart';
 import 'package:ecomerce_shop_app/controllers/subcategory_controller.dart';
 import 'package:ecomerce_shop_app/models/category.dart';
+import 'package:ecomerce_shop_app/models/product.dart';
 import 'package:ecomerce_shop_app/models/subcategory.dart';
 import 'package:ecomerce_shop_app/views/screens/detail/screens/widgets/inner_banner_widget.dart';
 import 'package:ecomerce_shop_app/views/screens/detail/screens/widgets/inner_header_widget.dart';
 import 'package:ecomerce_shop_app/views/screens/detail/screens/widgets/subcategory_title_widget.dart';
+import 'package:ecomerce_shop_app/views/screens/nav_screens/widgets/product_item_widget.dart';
+import 'package:ecomerce_shop_app/views/screens/nav_screens/widgets/reusable_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -21,12 +25,14 @@ class _InnerCategoryContentWidgetState
     extends State<InnerCategoryContentWidget> {
   late Future<List<Subcategory>> _subCategories;
   final SubcategoryController _subcategoryController = SubcategoryController();
-
+  late Future<List<Product>> futureProduct;
   @override
   void initState() {
     super.initState();
     _subCategories = _subcategoryController
         .getSubcategoriesByCategoryName(widget.category.name);
+    futureProduct =
+        ProductController().loadProductByCategory(widget.category.name);
   }
 
   @override
@@ -96,6 +102,40 @@ class _InnerCategoryContentWidgetState
                         },
                       ),
                     ),
+                  );
+                }
+              },
+            ),
+            const ReusableTextWidget(
+                title: 'Popular Product', subtitle: 'View all'),
+            FutureBuilder(
+              future: futureProduct,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snapshot.hasError) {
+                  return Center(
+                    child: Text("Error ${snapshot.error}"),
+                  );
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(
+                    child: Text('No Products under this category'),
+                  );
+                } else {
+                  final products = snapshot.data;
+                  return SizedBox(
+                    height: 256,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: products!.length,
+                        itemBuilder: (context, index) {
+                          final product = products[index];
+                          return ProductItemWidget(
+                            product: product,
+                          );
+                        }),
                   );
                 }
               },
