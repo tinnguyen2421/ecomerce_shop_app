@@ -1,10 +1,9 @@
-import 'package:ecomerce_shop_app/controllers/auth_controller.dart';
 import 'package:ecomerce_shop_app/views/screens/detail/screens/order_screen.dart';
 import 'package:flutter/material.dart';
 
 class AccountScreen extends StatelessWidget {
-  AccountScreen({super.key});
-  final AuthController _authController = AuthController();
+  const AccountScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Center(
