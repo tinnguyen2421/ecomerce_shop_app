@@ -1,4 +1,7 @@
+import 'package:ecomerce_shop_app/controllers/auth_controller.dart';
+import 'package:ecomerce_shop_app/controllers/order_controller.dart';
 import 'package:ecomerce_shop_app/provider/cart_provider.dart';
+import 'package:ecomerce_shop_app/views/screens/detail/screens/shipping_address_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,15 +10,17 @@ class CheckoutScreen extends ConsumerStatefulWidget {
   const CheckoutScreen({super.key});
 
   @override
-  _CheckoutScreenState createState() => _CheckoutScreenState();
+  ConsumerState<CheckoutScreen> createState() => _CheckoutScreenState();
 }
 
 class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   String selectedPaymentMethod = 'stripe';
-
+  final OrderController _orderController = OrderController();
   @override
   Widget build(BuildContext context) {
     final cartData = ref.read(cartProvider);
+    final _cartProvider = ref.read(cartProvider.notifier);
+    final user = ref.watch(userProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Checkout'),
@@ -28,7 +33,11 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
             children: [
               // Add Address section
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return ShippingAddressScreen();
+                  }));
+                },
                 child: Container(
                   margin: const EdgeInsets.only(bottom: 10),
                   width: double.infinity,
@@ -57,29 +66,69 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'Add Address',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: SizedBox(
+                                width: 114,
+                                child: user!.state.isNotEmpty
+                                    ? const Text(
+                                        'Address',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      )
+                                    : const Text(
+                                        'Add Address',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                               ),
                             ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'United States',
-                              style: GoogleFonts.lato(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1.3,
-                              ),
+                            const SizedBox(
+                              height: 4,
                             ),
-                            Text(
-                              'Enter city',
-                              style: GoogleFonts.lato(
-                                color: const Color(0xFF7F808C),
-                                fontWeight: FontWeight.w500,
-                                fontSize: 12,
-                              ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: user.state.isNotEmpty
+                                  ? Text(
+                                      user.state,
+                                      style: GoogleFonts.lato(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 1.3,
+                                      ),
+                                    )
+                                  : Text(
+                                      'United States',
+                                      style: GoogleFonts.lato(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 1.3,
+                                      ),
+                                    ),
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: user.city.isNotEmpty
+                                  ? Text(
+                                      user.city,
+                                      style: GoogleFonts.lato(
+                                        color: const Color(0xFF7F808C),
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12,
+                                      ),
+                                    )
+                                  : Text(
+                                      'Enter city',
+                                      style: GoogleFonts.lato(
+                                        color: const Color(0xFF7F808C),
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12,
+                                      ),
+                                    ),
                             ),
                           ],
                         ),
@@ -218,24 +267,71 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Container(
-          width: 338,
-          height: 58,
-          decoration: BoxDecoration(
-            color: const Color(0xFF3854EE),
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: Center(
-            child: Text(
-              selectedPaymentMethod == 'stripe' ? 'Pay Now' : 'Place Order',
-              style: GoogleFonts.montserrat(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
+        child: user.state.isEmpty
+            ? TextButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const ShippingAddressScreen();
+                  }));
+                },
+                child: Text(
+                  'Please enter shipping address',
+                  style: GoogleFonts.montserrat(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17,
+                  ),
+                ),
+              )
+            : InkWell(
+                onTap: () async {
+                  if (selectedPaymentMethod == 'stripe') {
+                    //pay with stripe to place the order
+                  } else {
+                    await Future.forEach(_cartProvider.getCartItem.entries,
+                        (entry) {
+                      var item = entry.value;
+                      _orderController.uploadOrders(
+                        id: '',
+                        fullName: ref.read(userProvider)!.fullName,
+                        email: ref.read(userProvider)!.email,
+                        state: 'Viet Nam',
+                        city: 'Ho Chi Minh',
+                        locality: '50 Pham Cu Luong',
+                        productName: item.productName,
+                        productPrice: item.productPrice,
+                        quantity: item.quantity,
+                        category: item.category,
+                        image: item.image[0],
+                        buyerId: ref.read(userProvider)!.id,
+                        vendorId: item.vendorId,
+                        processing: true,
+                        delivered: false,
+                        context: context,
+                      );
+                    });
+                  }
+                },
+                child: Container(
+                  width: 338,
+                  height: 58,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF3854EE),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Center(
+                    child: Text(
+                      selectedPaymentMethod == 'stripe'
+                          ? 'Pay Now'
+                          : 'Place Order',
+                      style: GoogleFonts.montserrat(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
       ),
     );
   }

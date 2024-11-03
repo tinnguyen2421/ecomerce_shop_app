@@ -87,7 +87,15 @@ class ProductItemWidget extends StatelessWidget {
                   0xff868D94,
                 ),
               ),
-            )
+            ),
+            Text(
+              "${product.productPrice.toString()}đ",
+              style: GoogleFonts.montserrat(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: Colors.purple,
+              ),
+            ),
           ],
         ),
       ),

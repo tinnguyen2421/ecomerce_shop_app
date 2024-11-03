@@ -1,4 +1,5 @@
 import 'package:ecomerce_shop_app/controllers/auth_controller.dart';
+import 'package:ecomerce_shop_app/views/screens/detail/screens/order_screen.dart';
 import 'package:flutter/material.dart';
 
 class AccountScreen extends StatelessWidget {
@@ -9,9 +10,17 @@ class AccountScreen extends StatelessWidget {
     return Center(
       child: ElevatedButton(
           onPressed: () async {
-            await _authController.signOutUser(context: context);
+            // await _authController.signOutUser(context: context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return OrderScreen();
+                },
+              ),
+            );
           },
-          child: Text('Signout')),
+          child: const Text('My Orders')),
     );
   }
 }

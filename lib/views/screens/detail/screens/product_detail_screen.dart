@@ -16,7 +16,9 @@ class ProductDetailScreen extends ConsumerStatefulWidget {
 class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   @override
   Widget build(BuildContext context) {
-    final _cartProvider = ref.read(cartProvider.notifier);
+    final cartProviderData = ref.read(cartProvider.notifier);
+    final cartData = ref.watch(cartProvider);
+    final isInCart = cartData.containsKey(widget.product.id);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -163,29 +165,33 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       bottomSheet: Padding(
         padding: EdgeInsets.all(8),
         child: InkWell(
-          onTap: () {
-            _cartProvider.addProductToCart(
-              productName: widget.product.productName,
-              productPrice: widget.product.productPrice,
-              category: widget.product.category,
-              image: widget.product.images,
-              vendorId: widget.product.vendorId,
-              productQuantity: widget.product.quantity,
-              quantity: 1,
-              productId: widget.product.id,
-              description: widget.product.description,
-              fullName: widget.product.fullName,
-            );
-            showSnackBar(context, widget.product.productName);
-          },
+          onTap: isInCart
+              ? null
+              : () {
+                  cartProviderData.addProductToCart(
+                    productName: widget.product.productName,
+                    productPrice: widget.product.productPrice,
+                    category: widget.product.category,
+                    image: widget.product.images,
+                    vendorId: widget.product.vendorId,
+                    productQuantity: widget.product.quantity,
+                    quantity: 1,
+                    productId: widget.product.id,
+                    description: widget.product.description,
+                    fullName: widget.product.fullName,
+                  );
+                  showSnackBar(context, widget.product.productName);
+                },
           child: Container(
             width: 386,
             height: 46,
             clipBehavior: Clip.hardEdge,
             decoration: BoxDecoration(
-              color: const Color(
-                0xFF3B54EE,
-              ),
+              color: isInCart
+                  ? Colors.grey
+                  : const Color(
+                      0xFF3B54EE,
+                    ),
               borderRadius: BorderRadius.circular(
                 24,
               ),

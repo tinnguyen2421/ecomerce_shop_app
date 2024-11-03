@@ -1,7 +1,6 @@
 import 'package:ecomerce_shop_app/provider/cart_provider.dart';
 import 'package:ecomerce_shop_app/views/screens/detail/screens/checkout_screen.dart';
 import 'package:ecomerce_shop_app/views/screens/main_screen.dart';
-import 'package:ecomerce_shop_app/views/screens/nav_screens/home_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -337,14 +336,16 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                 -1,
               ),
               child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) {
-                      return const CheckoutScreen();
-                    }),
-                  );
-                },
+                onTap: _totalAmount == 0
+                    ? null
+                    : () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) {
+                            return const CheckoutScreen();
+                          }),
+                        );
+                      },
                 child: Container(
                   width: 166,
                   height: 71,
