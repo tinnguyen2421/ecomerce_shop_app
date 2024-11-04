@@ -1,18 +1,19 @@
 import 'package:ecomerce_shop_app/controllers/product_controller.dart';
 import 'package:ecomerce_shop_app/provider/product_provider.dart';
+import 'package:ecomerce_shop_app/provider/top_rated_product_provider.dart';
 import 'package:ecomerce_shop_app/views/screens/nav_screens/widgets/product_item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PopularProductWidget extends ConsumerStatefulWidget {
-  const PopularProductWidget({super.key});
+class TopRatedProductWidget extends ConsumerStatefulWidget {
+  const TopRatedProductWidget({super.key});
 
   @override
-  ConsumerState<PopularProductWidget> createState() =>
-      _PopularProductWidgetState();
+  ConsumerState<TopRatedProductWidget> createState() =>
+      _TopRatedProductWidgetState();
 }
 
-class _PopularProductWidgetState extends ConsumerState<PopularProductWidget> {
+class _TopRatedProductWidgetState extends ConsumerState<TopRatedProductWidget> {
   bool isLoading = true;
   @override
   void initState() {
@@ -23,8 +24,8 @@ class _PopularProductWidgetState extends ConsumerState<PopularProductWidget> {
   Future<void> _fetchProduct() async {
     final ProductController productController = ProductController();
     try {
-      final products = await productController.loadPopularProducts();
-      ref.read(productProvider.notifier).setProducts(products);
+      final products = await productController.loadTopRatedProduct();
+      ref.read(topRatedProductProvider.notifier).setProducts(products);
     } catch (e) {
       print('$e');
     } finally {

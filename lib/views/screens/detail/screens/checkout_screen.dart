@@ -1,7 +1,9 @@
 import 'package:ecomerce_shop_app/controllers/auth_controller.dart';
 import 'package:ecomerce_shop_app/controllers/order_controller.dart';
 import 'package:ecomerce_shop_app/provider/cart_provider.dart';
+import 'package:ecomerce_shop_app/services/manage_http_respone.dart';
 import 'package:ecomerce_shop_app/views/screens/detail/screens/shipping_address_screen.dart';
+import 'package:ecomerce_shop_app/views/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -294,9 +296,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                         id: '',
                         fullName: ref.read(userProvider)!.fullName,
                         email: ref.read(userProvider)!.email,
-                        state: 'Viet Nam',
-                        city: 'Ho Chi Minh',
-                        locality: '50 Pham Cu Luong',
+                        state: ref.read(userProvider)!.state,
+                        city: ref.read(userProvider)!.city,
+                        locality: ref.read(userProvider)!.locality,
                         productName: item.productName,
                         productPrice: item.productPrice,
                         quantity: item.quantity,
@@ -308,6 +310,13 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                         delivered: false,
                         context: context,
                       );
+                    }).then((value) {
+                      _cartProvider.clearCart();
+                      showSnackBar(context, 'Order succesfully placed');
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return MainScreen();
+                      }));
                     });
                   }
                 },
