@@ -23,7 +23,8 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
 
   final providerContainer = ProviderContainer();
   Future<void> _fetchOrders() async {
-    final user = providerContainer.read(userProvider);
+    final user = ref.read(userProvider);
+
     if (user != null) {
       final OrderController orderController = OrderController();
       try {

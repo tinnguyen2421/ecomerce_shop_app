@@ -2,6 +2,10 @@ import 'dart:convert';
 
 import 'package:ecomerce_shop_app/global_variables.dart';
 import 'package:ecomerce_shop_app/models/user.dart';
+import 'package:ecomerce_shop_app/provider/cart_provider.dart';
+import 'package:ecomerce_shop_app/provider/delivered_order_count_provider.dart';
+import 'package:ecomerce_shop_app/provider/favorite_provider.dart';
+import 'package:ecomerce_shop_app/provider/order_provider.dart';
 import 'package:ecomerce_shop_app/provider/user_provider.dart';
 import 'package:ecomerce_shop_app/services/manage_http_respone.dart';
 import 'package:ecomerce_shop_app/views/screens/authencation_screen/login_screen.dart';
@@ -107,9 +111,12 @@ class AuthController {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       await preferences.remove('auth_token');
       await preferences.remove('user');
-
+      //ref.read(orderProvider.notifier).dispose();
       ref.read(userProvider.notifier).signOut();
-
+      ref.read(cartProvider.notifier).signOut();
+      ref.read(favoriteProvider.notifier).signOut();
+      ref.read(orderProvider.notifier).signOut();
+      ref.read(deliveredOrderCountProvider.notifier).resetCount();
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const LoginScreen()),

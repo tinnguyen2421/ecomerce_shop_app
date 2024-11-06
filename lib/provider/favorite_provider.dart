@@ -82,5 +82,9 @@ class FavoriteNotifier extends StateNotifier<Map<String, Favorite>> {
     _saveFavorites();
   }
 
+  void signOut() {
+    state = {};
+  }
+
   Map<String, Favorite> get getFavoriteItems => state;
 }

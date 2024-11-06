@@ -152,5 +152,9 @@ class CartNotifier extends StateNotifier<Map<String, Cart>> {
     _saveCartItems();
   }
 
+  void signOut() {
+    state = {};
+  }
+
   Map<String, Cart> get getCartItems => state;
 }

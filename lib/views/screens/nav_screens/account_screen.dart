@@ -87,7 +87,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
 
     //watch the deliveredOrderCountProvider to reactively rebuild when state changes
     final deliveredCount = ref.watch(deliveredOrderCountProvider);
-    final user = ref.read(userProvider);
+    final user = ref.watch(userProvider);
     final cartData = ref.read(cartProvider);
     final favoriteCount = ref.read(favoriteProvider);
     print(user!.email);
@@ -147,7 +147,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                   ),
                   Align(
                     alignment: const Alignment(0, 0.03),
-                    child: user!.fullName != ""
+                    child: user.fullName != ""
                         ? Text(
                             user.fullName,
                             style: GoogleFonts.montserrat(

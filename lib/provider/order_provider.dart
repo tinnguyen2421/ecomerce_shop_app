@@ -8,6 +8,10 @@ class OrderProvider extends StateNotifier<List<Order>> {
   void setOrders(List<Order> orders) {
     state = orders;
   }
+
+  void signOut() {
+    state = [];
+  }
 }
 
 final orderProvider = StateNotifierProvider<OrderProvider, List<Order>>(
