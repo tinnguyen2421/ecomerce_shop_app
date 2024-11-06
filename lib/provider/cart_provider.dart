@@ -4,19 +4,20 @@ import 'package:ecomerce_shop_app/models/cart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-//define a StateNotifierProvider to expose an instance of the CartNotifier
+//Define a  StateNotifierProvider to expose an instance of the CartNofier
 //Making it accessible within our app
 final cartProvider =
     StateNotifierProvider<CartNotifier, Map<String, Cart>>((ref) {
   return CartNotifier();
 });
 
-//a Notifier class to manage the cart state , extending stateNotifier
-//with an initial state of an empty map
+//A notifier class to manage the cart state, extending stateNotifier
+//with an inital state of an empty map
 class CartNotifier extends StateNotifier<Map<String, Cart>> {
   CartNotifier() : super({}) {
     _loadCartItems();
   }
+
   //A private method that loads items from sharedpreferences
   Future<void> _loadCartItems() async {
     //retrieving the sharepreferences instance to store data
@@ -37,6 +38,7 @@ class CartNotifier extends StateNotifier<Map<String, Cart>> {
     }
   }
 
+//A private method that saves the current list of favorite items to sharedpreferences
   Future<void> _saveCartItems() async {
     //retrieving the sharepreferences instance to store data
     final prefs = await SharedPreferences.getInstance();
@@ -46,7 +48,7 @@ class CartNotifier extends StateNotifier<Map<String, Cart>> {
     await prefs.setString('cart_items', cartString);
   }
 
-  //method to add product to the cart
+  //Method to add product to the cart
   void addProductToCart({
     required String productName,
     required int productPrice,
@@ -61,7 +63,7 @@ class CartNotifier extends StateNotifier<Map<String, Cart>> {
   }) {
     //check if the product is already in the cart
     if (state.containsKey(productId)) {
-      //if the product is already in the cart update its quantity and maybe other detail
+      //if the product is already in the cart, update its quantity and maybe other detail
       state = {
         ...state,
         productId: Cart(
@@ -79,7 +81,7 @@ class CartNotifier extends StateNotifier<Map<String, Cart>> {
       };
       _saveCartItems();
     } else {
-      //if the product is not in the cart , add id with the provided details
+      // if the product is not in the cart, add it with the provied  details
       state = {
         ...state,
         productId: Cart(
@@ -94,16 +96,17 @@ class CartNotifier extends StateNotifier<Map<String, Cart>> {
             description: description,
             fullName: fullName)
       };
+
       _saveCartItems();
     }
   }
 
-//method to increment the quantity of a product in the cart
+//Method to increment the quantity   of a product  in the cart
   void incrementCartItem(String productId) {
     if (state.containsKey(productId)) {
       state[productId]!.quantity++;
 
-      //Notify listeners that the state has changed
+      //Notify listeners that the state  has changed
       state = {...state};
       _saveCartItems();
     }
@@ -114,7 +117,7 @@ class CartNotifier extends StateNotifier<Map<String, Cart>> {
     if (state.containsKey(productId)) {
       state[productId]!.quantity--;
 
-      //Notify listeners that the state has changed
+      //Notify listerners that the state has changed
       state = {...state};
       _saveCartItems();
     }
@@ -123,26 +126,31 @@ class CartNotifier extends StateNotifier<Map<String, Cart>> {
   //Method to remove item from the cart
   void removeCartItem(String productId) {
     state.remove(productId);
-    //notify listeners that the state chang
+    //Notify Listerners that the state has changed
+
     state = {...state};
     _saveCartItems();
   }
 
-  //Method to calculate total amout of items we have in cart
+  //Method to calculate total amount of items we have in cart
   double calculateTotalAmount() {
     double totalAmount = 0.0;
     state.forEach((productId, cartItem) {
       totalAmount += cartItem.quantity * cartItem.productPrice;
     });
+
     return totalAmount;
   }
 
-  //method to clear all items in the cart
+  //Method to clear all items in the cart
   void clearCart() {
     state = {};
+    //Notify Listerners that the state has changed
+
     state = {...state};
+
     _saveCartItems();
   }
 
-  Map<String, Cart> get getCartItem => state;
+  Map<String, Cart> get getCartItems => state;
 }

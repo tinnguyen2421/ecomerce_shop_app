@@ -14,6 +14,7 @@ class FavoriteScreen extends ConsumerStatefulWidget {
 class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
   @override
   Widget build(BuildContext context) {
+    //final favoriteItems = providerContainer.read(favoriteProvider);
     final wishItemData = ref.watch(favoriteProvider);
     final wishListProvider = ref.read(favoriteProvider.notifier);
     return Scaffold(
@@ -26,10 +27,11 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
           clipBehavior: Clip.hardEdge,
           decoration: const BoxDecoration(
             image: DecorationImage(
-                image: AssetImage(
-                  'assets/icons/cartb.png',
-                ),
-                fit: BoxFit.cover),
+              image: AssetImage(
+                'assets/icons/cartb.png',
+              ),
+              fit: BoxFit.cover,
+            ),
           ),
           child: Stack(
             children: [
@@ -67,21 +69,22 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
                           ),
                         ),
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),
               Positioned(
-                  left: 61,
-                  top: 51,
-                  child: Text(
-                    'My Favorite',
-                    style: GoogleFonts.montserrat(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ))
+                left: 61,
+                top: 51,
+                child: Text(
+                  'My WishList',
+                  style: GoogleFonts.montserrat(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -93,25 +96,22 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
                 children: [
                   Text(
                     textAlign: TextAlign.center,
-                    'Your wish list is empty\n you can add product to your wish list from the button below',
+                    'your wishlist is empty\n you can  add product to your wishlist from the button below',
                     style: GoogleFonts.montserrat(
                       fontSize: 17,
                       letterSpacing: 1.7,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.push(context, MaterialPageRoute(builder: (
                         context,
-                        MaterialPageRoute(builder: (context) {
-                          return MainScreen();
-                        }),
-                      );
+                      ) {
+                        return MainScreen();
+                      }));
                     },
-                    child: const Text(
-                      'Shop Now',
-                    ),
+                    child: const Text('Shop Now'),
                   ),
                 ],
               ),
@@ -121,8 +121,9 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
               shrinkWrap: true,
               itemBuilder: (context, index) {
                 final wishData = wishItemData.values.toList()[index];
+
                 return Padding(
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                   child: Center(
                     child: Container(
                       width: 335,
@@ -159,20 +160,18 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
                                 height: 78,
                                 clipBehavior: Clip.antiAlias,
                                 decoration: BoxDecoration(
-                                  color: const Color(
-                                    0xFFBCC5FF,
-                                  ),
+                                  color: const Color(0xFFBCC5FF),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                               ),
                             ),
                             Positioned(
-                              top: 16,
                               left: 275,
+                              top: 16,
                               child: Text(
-                                '${wishData.productPrice.toStringAsFixed(2)}đ',
+                                '\$${wishData.productPrice.toStringAsFixed(2)}',
                                 style: GoogleFonts.montserrat(
-                                  fontSize: 18,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                   color: const Color(
                                     0xFF0B0C1F,
@@ -188,7 +187,7 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
                                 child: Text(
                                   wishData.productName,
                                   style: GoogleFonts.montserrat(
-                                    fontSize: 18,
+                                    fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -199,8 +198,8 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
                               top: 14,
                               child: Image.network(
                                 wishData.image[0],
-                                height: 67,
                                 width: 56,
+                                height: 67,
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -216,7 +215,7 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
                                   Icons.delete,
                                 ),
                               ),
-                            ),
+                            )
                           ],
                         ),
                       ),

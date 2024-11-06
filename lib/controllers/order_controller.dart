@@ -30,21 +30,23 @@ class OrderController {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       String? token = preferences.getString("auth_token");
       final Order order = Order(
-          id: id,
-          fullName: fullName,
-          email: email,
-          state: state,
-          city: city,
-          locality: locality,
-          productName: productName,
-          productPrice: productPrice,
-          quantity: quantity,
-          category: category,
-          image: image,
-          buyerId: buyerId,
-          vendorId: vendorId,
-          processing: processing,
-          delivered: delivered);
+        id: id,
+        fullName: fullName,
+        email: email,
+        state: state,
+        city: city,
+        locality: locality,
+        productName: productName,
+        productPrice: productPrice,
+        quantity: quantity,
+        category: category,
+        image: image,
+        buyerId: buyerId,
+        vendorId: vendorId,
+        processing: processing,
+        delivered: delivered,
+      );
+
       http.Response response = await http.post(
         Uri.parse("$uri/api/orders"),
         body: order.toJson(),
@@ -53,6 +55,7 @@ class OrderController {
           'x-auth-token': token!,
         },
       );
+
       manageHttpRespond(
           response: response,
           context: context,
@@ -64,12 +67,13 @@ class OrderController {
     }
   }
 
-  //method to GET Orders by buyerId
+  //Method to GET Orders by buyer id
+
   Future<List<Order>> loadOrders({required String buyerId}) async {
     try {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       String? token = preferences.getString("auth_token");
-      //Send an HTTP GET request to get the orders by the buyerId
+      //Send an HTTP GET request to get the orders by the buyerID
       http.Response response = await http.get(
         Uri.parse('$uri/api/orders/$buyerId'),
         headers: <String, String>{
@@ -77,39 +81,43 @@ class OrderController {
           'x-auth-token': token!,
         },
       );
-      //Check if the response status code is 200(Ok).
+      //Check if the response status code is 200(OK).
       if (response.statusCode == 200) {
-        //Parse the json response body into dynamic List
-        //This convert the json data into a formate that can be further processed in Dart.
+        //Parse the Json response body into dynamic List
+        //THIS convert the json data into a formate that can be further processed in Dart.
         List<dynamic> data = jsonDecode(response.body);
-        //Map the dynamic list to list of orders object using the fromJson factory method
-        //this step convert the raw data into list of the orders instance, which are easier to work with
+        //Map the dynamic list to list of Orders object using the fromjson factory method
+        //this step coverts the raw data into list of the orders  instances , which are easier to work with
         List<Order> orders =
             data.map((order) => Order.fromJson(order)).toList();
+
         return orders;
+      } else if (response.statusCode == 404) {
+        return [];
       } else {
-        //throw an exception if the server responded with an erro status code
-        throw Exception('Failed to load Orders');
+        //throw an execption if the server responded with an error status code
+        throw Exception("failed to load Orders");
       }
     } catch (e) {
-      throw Exception('Rrror loading Orders');
+      throw Exception('error Loading Orders');
     }
   }
 
-  //DELETE order by Id
+  //delete order by ID
   Future<void> deleteOrder({required String id, required context}) async {
     try {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       String? token = preferences.getString("auth_token");
-      //send HTTP delete request to delete the order by _id
+      //send an HTTP Delete request to delete the order by _id
       http.Response response = await http.delete(
-        Uri.parse('$uri/api/orders/$id'),
+        Uri.parse("$uri/api/orders/$id"),
         headers: <String, String>{
           "Content-Type": 'application/json; charset=UTF-8',
           'x-auth-token': token!,
         },
       );
-      //handle the HTTP response
+
+      //handle the HTTP Response
       manageHttpRespond(
           response: response,
           context: context,
@@ -119,9 +127,9 @@ class OrderController {
     } catch (e) {
       showSnackBar(context, e.toString());
     }
-    //Method to count delivered orders
   }
 
+  //Method to count delivered orders
   Future<int> getDeliveredOrderCount({required String buyerId}) async {
     try {
       //load all order

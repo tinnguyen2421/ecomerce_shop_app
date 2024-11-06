@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:core';
 
 class Cart {
   final String productName;
@@ -13,18 +12,18 @@ class Cart {
   final String description;
   final String fullName;
 
-  Cart({
-    required this.productName,
-    required this.productPrice,
-    required this.category,
-    required this.image,
-    required this.vendorId,
-    required this.productQuantity,
-    required this.quantity,
-    required this.productId,
-    required this.description,
-    required this.fullName,
-  });
+  Cart(
+      {required this.productName,
+      required this.productPrice,
+      required this.category,
+      required this.image,
+      required this.vendorId,
+      required this.productQuantity,
+      required this.quantity,
+      required this.productId,
+      required this.description,
+      required this.fullName});
+
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'productName': productName,

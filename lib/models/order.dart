@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 class Order {
@@ -17,40 +18,40 @@ class Order {
   final bool processing;
   final bool delivered;
 
-  Order({
-    required this.id,
-    required this.fullName,
-    required this.email,
-    required this.state,
-    required this.city,
-    required this.locality,
-    required this.productName,
-    required this.productPrice,
-    required this.quantity,
-    required this.category,
-    required this.image,
-    required this.buyerId,
-    required this.vendorId,
-    required this.processing,
-    required this.delivered,
-  });
+  Order(
+      {required this.id,
+      required this.fullName,
+      required this.email,
+      required this.state,
+      required this.city,
+      required this.locality,
+      required this.productName,
+      required this.productPrice,
+      required this.quantity,
+      required this.category,
+      required this.image,
+      required this.buyerId,
+      required this.vendorId,
+      required this.processing,
+      required this.delivered});
+
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      "id": id,
-      "fullName": fullName,
-      "email": email,
-      "state": state,
-      "city": city,
-      "locality": locality,
-      "productName": productName,
-      "productPrice": productPrice,
-      "quantity": quantity,
-      "category": category,
-      "image": image,
-      "buyerId": buyerId,
-      "vendorId": vendorId,
-      "processing": processing,
-      "delivered": delivered,
+      'id': id,
+      'fullName': fullName,
+      'email': email,
+      'state': state,
+      'city': city,
+      'locality': locality,
+      'productName': productName,
+      'productPrice': productPrice,
+      'quantity': quantity,
+      'category': category,
+      'image': image,
+      'buyerId': buyerId,
+      'vendorId': vendorId,
+      'processing': processing,
+      'delivered': delivered,
     };
   }
 

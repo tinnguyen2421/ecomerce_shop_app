@@ -4,30 +4,36 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
+
   @override
-  State<RegisterScreen> createState() => _RegisterScreeenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreeenState extends State<RegisterScreen> {
-  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+class _RegisterScreenState extends State<RegisterScreen> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   final AuthController _authController = AuthController();
+  bool isLoading = false;
   late String email;
+
   late String fullName;
+
   late String password;
-  bool _isLoading = false;
+
   registerUser() async {
     setState(() {
-      _isLoading = true;
+      isLoading = true;
     });
     await _authController
         .signUpUsers(
             context: context,
-            email: email,
             fullName: fullName,
+            email: email,
             password: password)
         .whenComplete(() {
       setState(() {
-        _isLoading = false;
+        isLoading = false;
       });
     });
   }
@@ -43,31 +49,31 @@ class _RegisterScreeenState extends State<RegisterScreen> {
         child: Center(
           child: SingleChildScrollView(
             child: Form(
-              key: _formkey,
+              key: _formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Tạo tài khoản",
+                    "Create Your Account",
                     style: GoogleFonts.getFont(
                       'Lato',
-                      color: Color(0xFF0d120E),
+                      color: const Color(0xFF0d120E),
                       fontWeight: FontWeight.bold,
                       letterSpacing: 0.2,
                       fontSize: 23,
                     ),
                   ),
                   Text(
-                    'để khám phá sự độc đáo ',
+                    'To Explore the world exclusives',
                     style: GoogleFonts.getFont(
                       'Lato',
-                      color: Color(0xFF0d120E),
+                      color: const Color(0xFF0d120E),
                       fontSize: 14,
                       letterSpacing: 0.2,
                     ),
                   ),
                   Image.asset(
-                    'assets/images/illustrating.png',
+                    'assets/images/Illustration.png',
                     width: 200,
                     height: 200,
                   ),
@@ -76,7 +82,7 @@ class _RegisterScreeenState extends State<RegisterScreen> {
                     child: Text(
                       'Email',
                       style: GoogleFonts.getFont(
-                        "Nunito Sans",
+                        'Nunito Sans',
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.2,
                       ),
@@ -88,7 +94,7 @@ class _RegisterScreeenState extends State<RegisterScreen> {
                     },
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Vui lòng nhập email';
+                        return 'enter your email';
                       } else {
                         return null;
                       }
@@ -101,7 +107,7 @@ class _RegisterScreeenState extends State<RegisterScreen> {
                         ),
                         focusedBorder: InputBorder.none,
                         enabledBorder: InputBorder.none,
-                        labelText: 'Email',
+                        labelText: 'enter your email',
                         labelStyle: GoogleFonts.getFont(
                           "Nunito Sans",
                           fontSize: 14,
@@ -110,21 +116,21 @@ class _RegisterScreeenState extends State<RegisterScreen> {
                         prefixIcon: Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Image.asset(
-                            'assets/icons/email_icon.png',
+                            'assets/icons/email.png',
                             width: 20,
                             height: 20,
                           ),
                         )),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Align(
                     alignment: Alignment.topLeft,
                     child: Text(
-                      'Tên đầy đủ',
+                      'Full Name',
                       style: GoogleFonts.getFont(
-                        "Nunito Sans",
+                        'Nunito Sans',
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.2,
                       ),
@@ -136,7 +142,7 @@ class _RegisterScreeenState extends State<RegisterScreen> {
                     },
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Vui lòng nhập tên đầy đủ';
+                        return "enter your full name";
                       } else {
                         return null;
                       }
@@ -149,7 +155,7 @@ class _RegisterScreeenState extends State<RegisterScreen> {
                         ),
                         focusedBorder: InputBorder.none,
                         enabledBorder: InputBorder.none,
-                        labelText: 'Nhập tên của bạn',
+                        labelText: 'enter your full name',
                         labelStyle: GoogleFonts.getFont(
                           "Nunito Sans",
                           fontSize: 14,
@@ -158,13 +164,13 @@ class _RegisterScreeenState extends State<RegisterScreen> {
                         prefixIcon: Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Image.asset(
-                            'assets/icons/user_icon.png',
+                            'assets/icons/user.jpeg',
                             width: 20,
                             height: 20,
                           ),
                         )),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   TextFormField(
@@ -173,41 +179,42 @@ class _RegisterScreeenState extends State<RegisterScreen> {
                     },
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Vui lòng nhập mật khẩu';
+                        return "enter your password";
                       } else {
                         return null;
                       }
                     },
                     decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        filled: true,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(9),
+                      fillColor: Colors.white,
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(9),
+                      ),
+                      focusedBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      labelText: 'enter your password',
+                      labelStyle: GoogleFonts.getFont(
+                        "Nunito Sans",
+                        fontSize: 14,
+                        letterSpacing: 0.1,
+                      ),
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Image.asset(
+                          'assets/icons/password.png',
+                          width: 20,
+                          height: 20,
                         ),
-                        focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        labelText: 'Mật khẩu',
-                        labelStyle: GoogleFonts.getFont(
-                          "Nunito Sans",
-                          fontSize: 14,
-                          letterSpacing: 0.1,
-                        ),
-                        prefixIcon: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Image.asset(
-                            'assets/icons/password_icon.png',
-                            width: 20,
-                            height: 20,
-                          ),
-                        ),
-                        suffixIcon: Icon(Icons.visibility)),
+                      ),
+                      suffixIcon: Icon(Icons.visibility),
+                    ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   InkWell(
                     onTap: () {
-                      if (_formkey.currentState!.validate()) {
+                      if (_formKey.currentState!.validate()) {
                         registerUser();
                       }
                     },
@@ -216,7 +223,7 @@ class _RegisterScreeenState extends State<RegisterScreen> {
                       height: 50,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
-                        gradient: LinearGradient(
+                        gradient: const LinearGradient(
                           colors: [
                             Color(0xFF102DE1),
                             Color(0xCC0D6EFF),
@@ -237,7 +244,7 @@ class _RegisterScreeenState extends State<RegisterScreen> {
                                 decoration: BoxDecoration(
                                   border: Border.all(
                                     width: 12,
-                                    color: Color(0xFF103DE5),
+                                    color: const Color(0xFF103DE5),
                                   ),
                                   borderRadius: BorderRadius.circular(30),
                                 ),
@@ -254,10 +261,11 @@ class _RegisterScreeenState extends State<RegisterScreen> {
                                 height: 5,
                                 clipBehavior: Clip.antiAlias,
                                 decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(
-                                      3,
-                                    )),
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(
+                                    3,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -277,47 +285,47 @@ class _RegisterScreeenState extends State<RegisterScreen> {
                             ),
                           ),
                           Center(
-                            child: _isLoading
-                                ? const CircularProgressIndicator(
-                                    color: Colors.white,
-                                  )
-                                : Text(
-                                    'Đăng kí',
-                                    style: GoogleFonts.getFont('Lato',
+                              child: isLoading
+                                  ? const CircularProgressIndicator(
+                                      color: Colors.white,
+                                    )
+                                  : Text(
+                                      'Sign Up',
+                                      style: GoogleFonts.getFont(
+                                        'Lato',
                                         color: Colors.white,
                                         fontSize: 18,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                          )
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ))
                         ],
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Bạn đã có tài khoản ?',
+                        'Already have an Account?',
                         style: GoogleFonts.roboto(
                           fontWeight: FontWeight.w500,
+                          letterSpacing: 1,
                         ),
                       ),
                       InkWell(
                         onTap: () {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) {
-                            return LoginScreen();
+                            return const LoginScreen();
                           }));
                         },
                         child: Text(
-                          'Đăng nhập',
+                          'Sign In',
                           style: GoogleFonts.roboto(
-                            color: Color(
-                              0xFF103DE5,
-                            ),
+                            color: const Color(0xFF103DE5),
                             fontWeight: FontWeight.bold,
                           ),
                         ),

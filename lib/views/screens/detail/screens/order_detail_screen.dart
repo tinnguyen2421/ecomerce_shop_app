@@ -69,8 +69,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                             left: 13,
                             top: 9,
                             child: Container(
-                              height: 78,
                               width: 78,
+                              height: 78,
                               clipBehavior: Clip.antiAlias,
                               decoration: BoxDecoration(
                                 color: const Color(
@@ -138,11 +138,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                               ),
                                             ),
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             height: 2,
                                           ),
                                           Text(
-                                            "${widget.order.productPrice.toString()}đ",
+                                            "\$${widget.order.productPrice.toStringAsFixed(2)}",
                                             style: GoogleFonts.montserrat(
                                               fontSize: 15,
                                               fontWeight: FontWeight.bold,
@@ -163,14 +163,12 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                             left: 13,
                             top: 113,
                             child: Container(
-                              height: 25,
                               width: 100,
+                              height: 25,
                               clipBehavior: Clip.antiAlias,
                               decoration: BoxDecoration(
                                 color: widget.order.delivered == true
-                                    ? const Color(
-                                        0xFF3C55EF,
-                                      )
+                                    ? const Color(0xFF3C55EF)
                                     : widget.order.processing == true
                                         ? Colors.purple
                                         : Colors.red,
@@ -183,7 +181,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                 children: [
                                   Positioned(
                                     left: 9,
-                                    top: 3,
+                                    top: 2,
                                     child: Text(
                                       widget.order.delivered == true
                                           ? "Delivered"
@@ -197,7 +195,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                         letterSpacing: 1.3,
                                       ),
                                     ),
-                                  ),
+                                  )
                                 ],
                               ),
                             ),
@@ -213,7 +211,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                 height: 20,
                               ),
                             ),
-                          ),
+                          )
                         ],
                       ),
                     ),
@@ -223,10 +221,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 10,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Container(
               width: 336,
               height: widget.order.delivered == true ? 170 : 120,
@@ -242,7 +237,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(8),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -250,7 +245,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                         Text(
                           'Delivery Address',
                           style: GoogleFonts.montserrat(
-                            fontSize: 18,
+                            fontSize: 17,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 1.7,
                           ),
@@ -259,21 +254,21 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                           height: 8,
                         ),
                         Text(
-                          '${widget.order.state} ${widget.order.city}${widget.order.locality}',
+                          "${widget.order.state} ${widget.order.city} ${widget.order.locality}",
                           style: GoogleFonts.lato(
                             letterSpacing: 1.5,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                         Text(
-                          'To: ${widget.order.fullName}',
+                          "To : ${widget.order.fullName}",
                           style: GoogleFonts.roboto(
                             fontSize: 17,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          "Order Id ${widget.order.id}",
+                          "Order Id: ${widget.order.id}",
                           style: GoogleFonts.lato(
                             fontWeight: FontWeight.bold,
                           ),
@@ -288,9 +283,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                 context: context,
                                 builder: (context) {
                                   return AlertDialog(
-                                    title: const Text(
-                                      'Leave a review',
-                                    ),
+                                    title: const Text('Leave a review'),
                                     content: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
@@ -303,20 +296,22 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                         RatingBar(
                                           filledIcon: Icons.star,
                                           emptyIcon: Icons.star_border,
-                                          onRatingChanged: (value) =>
-                                              {rating = value},
+                                          onRatingChanged: (value) {
+                                            rating = value;
+                                          },
                                           initialRating: 2,
                                           maxRating: 5,
-                                        )
+                                        ),
                                       ],
                                     ),
                                     actions: [
                                       TextButton(
                                         onPressed: () {
                                           final review = _reviewController.text;
+
                                           _productReviewController.uploadReview(
                                               buyerId: widget.order.buyerId,
-                                              email: widget.order.fullName,
+                                              email: widget.order.email,
                                               fullName: widget.order.fullName,
                                               productId: widget.order.id,
                                               rating: rating,
@@ -332,17 +327,17 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                 });
                           },
                           child: Text(
-                            'Leave a Review',
+                            'Leave a Review ',
                             style: GoogleFonts.montserrat(
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         )
-                      : SizedBox()
+                      : const SizedBox()
                 ],
               ),
             ),
-          ),
+          )
         ],
       ),
     );

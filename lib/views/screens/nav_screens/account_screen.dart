@@ -2,6 +2,7 @@ import 'package:ecomerce_shop_app/controllers/auth_controller.dart';
 import 'package:ecomerce_shop_app/provider/cart_provider.dart';
 import 'package:ecomerce_shop_app/provider/delivered_order_count_provider.dart';
 import 'package:ecomerce_shop_app/provider/favorite_provider.dart';
+import 'package:ecomerce_shop_app/provider/user_provider.dart';
 import 'package:ecomerce_shop_app/views/screens/detail/screens/order_screen.dart';
 import 'package:ecomerce_shop_app/views/screens/detail/screens/shipping_address_screen.dart';
 import 'package:flutter/material.dart';
@@ -17,15 +18,15 @@ class AccountScreen extends ConsumerStatefulWidget {
 
 class _AccountScreenState extends ConsumerState<AccountScreen> {
   final AuthController _authController = AuthController();
-  //show sigout Dialog
+
+  //show signout dialog
   void showSignOutDialog(BuildContext context) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             title: Text(
               'Are you sure',
               style: GoogleFonts.montserrat(
@@ -55,23 +56,21 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
+                    backgroundColor: Colors.redAccent,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10))),
                 onPressed: () async {
-                  await _authController.signOutUser(context: context);
+                  await _authController.signOutUser(context: context, ref: ref);
                 },
                 child: Text(
-                  'Logout',
+                  "Logout",
                   style: GoogleFonts.montserrat(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
-              ),
+              )
             ],
           );
         });
@@ -80,15 +79,18 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
   @override
   Widget build(BuildContext context) {
     final buyerId = ref.read(userProvider)!.id;
-    //fetch the delivered order count when the widget build
+    print(buyerId);
+    //fetch the delivered order count when the widget  build
     ref
         .read(deliveredOrderCountProvider.notifier)
         .fetchDeliveredOrderCount(buyerId, context);
+
     //watch the deliveredOrderCountProvider to reactively rebuild when state changes
     final deliveredCount = ref.watch(deliveredOrderCountProvider);
     final user = ref.read(userProvider);
     final cartData = ref.read(cartProvider);
     final favoriteCount = ref.read(favoriteProvider);
+    print(user!.email);
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -421,7 +423,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
               height: 10,
             ),
             ListTile(
-              onTap: () async {
+              onTap: () {
                 showSignOutDialog(context);
               },
               leading: Image.asset(

@@ -1,4 +1,5 @@
 import 'package:ecomerce_shop_app/controllers/auth_controller.dart';
+import 'package:ecomerce_shop_app/provider/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,19 +17,21 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
   late TextEditingController _stateController;
   late TextEditingController _cityController;
   late TextEditingController _localityController;
+
   @override
   void initState() {
     super.initState();
-    //read the current user data from the provider
+    //Read the current user data from the provider
     final user = ref.read(userProvider);
-    //initialize the controllers with the current data if available
-    //if the user data is not available, initalize with an empty String
+
+    //Initialize the controllers with the current data if available
+    // if user data  is not available , initialize with an empty String
     _stateController = TextEditingController(text: user?.state ?? "");
     _cityController = TextEditingController(text: user?.city ?? "");
     _localityController = TextEditingController(text: user?.locality ?? "");
   }
 
-  //show load ing dialog
+  //Show Loading Dialog
   _showLoadingDialog() {
     showDialog(
         context: context,
@@ -37,9 +40,7 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
             child: Padding(
-              padding: const EdgeInsets.all(
-                15,
-              ),
+              padding: const EdgeInsets.all(15),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -53,7 +54,7 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
-                  ),
+                  )
                 ],
               ),
             ),
@@ -64,7 +65,7 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
   @override
   Widget build(BuildContext context) {
     final user = ref.read(userProvider);
-    final updatedUser = ref.read(userProvider.notifier);
+    final udpdateUser = ref.read(userProvider.notifier);
     return Scaffold(
       backgroundColor: Colors.white.withOpacity(0.96),
       appBar: AppBar(
@@ -74,23 +75,19 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
           'Delivery',
           style: GoogleFonts.montserrat(
             fontWeight: FontWeight.w500,
-            fontSize: 17,
             letterSpacing: 1.7,
           ),
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 20,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Center(
           child: Form(
             key: _formKey,
             child: Column(
               children: [
                 Text(
-                  'where will your order \n be shipped',
+                  'where will your order\n be shipped',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.montserrat(
                     fontSize: 18,
@@ -102,7 +99,7 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
                   controller: _stateController,
                   validator: (value) {
                     if (value!.isEmpty) {
-                      return 'Please enter State';
+                      return "please enter state";
                     } else {
                       return null;
                     }
@@ -118,7 +115,7 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
                   controller: _cityController,
                   validator: (value) {
                     if (value!.isEmpty) {
-                      return 'Please enter City';
+                      return "please enter city";
                     } else {
                       return null;
                     }
@@ -134,7 +131,7 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
                   controller: _localityController,
                   validator: (value) {
                     if (value!.isEmpty) {
-                      return 'Please enter Locality';
+                      return "please enter Locality";
                     } else {
                       return null;
                     }
@@ -154,6 +151,7 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
           onTap: () async {
             if (_formKey.currentState!.validate()) {
               _showLoadingDialog();
+
               await _authController
                   .updateUserLocation(
                 context: context,
@@ -161,30 +159,35 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
                 state: _stateController.text,
                 city: _cityController.text,
                 locality: _localityController.text,
+                ref: ref,
               )
                   .whenComplete(() {
-                updatedUser.recreatedUserState(
-                  state: _stateController.text,
-                  city: _cityController.text,
-                  locality: _localityController.text,
-                );
+                udpdateUser.recreateUserState(
+                    state: _stateController.text,
+                    city: _cityController.text,
+                    locality: _localityController.text);
                 Navigator.pop(context);
-                Navigator.pop(context);
+
+                ///this will close the Dialog
+                Navigator.pop(
+                    context); // this will close the shipping screen meaning it will take us back to the formal which is the checkout
               });
             } else {
-              print('Not Valid');
+              print('Not valid');
             }
           },
           child: Container(
             width: MediaQuery.of(context).size.width,
             height: 50,
             decoration: BoxDecoration(
-              color: const Color(0xFF3854EE),
+              color: const Color(
+                0xFF3854EE,
+              ),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Center(
               child: Text(
-                'Save',
+                'Save ',
                 style: GoogleFonts.montserrat(
                   color: Colors.white,
                   fontSize: 18,

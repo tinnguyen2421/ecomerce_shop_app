@@ -18,7 +18,12 @@ class _TopRatedProductWidgetState extends ConsumerState<TopRatedProductWidget> {
   @override
   void initState() {
     super.initState();
-    _fetchProduct();
+    final products = ref.read(productProvider);
+    if (products.isEmpty) {
+      _fetchProduct();
+    } else {
+      isLoading = false;
+    }
   }
 
   Future<void> _fetchProduct() async {

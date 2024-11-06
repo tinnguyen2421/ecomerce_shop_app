@@ -1,7 +1,7 @@
-import 'package:ecomerce_shop_app/controllers/auth_controller.dart';
 import 'package:ecomerce_shop_app/controllers/order_controller.dart';
 import 'package:ecomerce_shop_app/models/order.dart';
 import 'package:ecomerce_shop_app/provider/order_provider.dart';
+import 'package:ecomerce_shop_app/provider/user_provider.dart';
 import 'package:ecomerce_shop_app/views/screens/detail/screens/order_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,8 +21,9 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
     _fetchOrders();
   }
 
+  final providerContainer = ProviderContainer();
   Future<void> _fetchOrders() async {
-    final user = ref.read(userProvider);
+    final user = providerContainer.read(userProvider);
     if (user != null) {
       final OrderController orderController = OrderController();
       try {
@@ -38,9 +39,9 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
     final OrderController orderController = OrderController();
     try {
       await orderController.deleteOrder(id: orderId, context: context);
-      _fetchOrders(); //refresh after deletion
+      _fetchOrders(); //Refresh the list after deletion
     } catch (e) {
-      print('error deleting order: ${e}');
+      print("error deleting orer : $e");
     }
   }
 
@@ -57,10 +58,11 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
           clipBehavior: Clip.hardEdge,
           decoration: const BoxDecoration(
             image: DecorationImage(
-                image: AssetImage(
-                  'assets/icons/cartb.png',
-                ),
-                fit: BoxFit.cover),
+              image: AssetImage(
+                'assets/icons/cartb.png',
+              ),
+              fit: BoxFit.cover,
+            ),
           ),
           child: Stack(
             children: [
@@ -98,40 +100,37 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                           ),
                         ),
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),
               Positioned(
-                  left: 61,
-                  top: 51,
-                  child: Text(
-                    'My Order',
-                    style: GoogleFonts.montserrat(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ))
+                left: 61,
+                top: 51,
+                child: Text(
+                  'My Orders',
+                  style: GoogleFonts.montserrat(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
       ),
       body: orders.isEmpty
           ? const Center(
-              child: Text(
-                'No order found',
-              ),
+              child: Text('No Order Found'),
             )
           : ListView.builder(
               itemCount: orders.length,
               itemBuilder: (context, index) {
                 final Order order = orders[index];
                 return Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 25,
-                    vertical: 25,
-                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
                   child: InkWell(
                     onTap: () {
                       Navigator.push(context,
@@ -174,8 +173,8 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                                       left: 13,
                                       top: 9,
                                       child: Container(
-                                        height: 78,
                                         width: 78,
+                                        height: 78,
                                         clipBehavior: Clip.antiAlias,
                                         decoration: BoxDecoration(
                                           color: const Color(
@@ -251,11 +250,11 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                                                         ),
                                                       ),
                                                     ),
-                                                    SizedBox(
+                                                    const SizedBox(
                                                       height: 2,
                                                     ),
                                                     Text(
-                                                      "${order.productPrice.toString()}đ",
+                                                      "\$${order.productPrice.toStringAsFixed(2)}",
                                                       style: GoogleFonts
                                                           .montserrat(
                                                         fontSize: 15,
@@ -278,14 +277,12 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                                       left: 13,
                                       top: 113,
                                       child: Container(
-                                        height: 25,
                                         width: 100,
+                                        height: 25,
                                         clipBehavior: Clip.antiAlias,
                                         decoration: BoxDecoration(
                                           color: order.delivered == true
-                                              ? const Color(
-                                                  0xFF3C55EF,
-                                                )
+                                              ? const Color(0xFF3C55EF)
                                               : order.processing == true
                                                   ? Colors.purple
                                                   : Colors.red,
@@ -298,7 +295,7 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                                           children: [
                                             Positioned(
                                               left: 9,
-                                              top: 3,
+                                              top: 2,
                                               child: Text(
                                                 order.delivered == true
                                                     ? "Delivered"
@@ -312,7 +309,7 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                                                   letterSpacing: 1.3,
                                                 ),
                                               ),
-                                            ),
+                                            )
                                           ],
                                         ),
                                       ),
@@ -334,7 +331,7 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                                   ],
                                 ),
                               ),
-                            ),
+                            )
                           ],
                         ),
                       ),

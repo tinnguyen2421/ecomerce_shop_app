@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 class BannerModel {
@@ -8,12 +9,11 @@ class BannerModel {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      "id": id,
-      "image": image,
+      'id': id,
+      'image': image,
     };
   }
 
-  //Serialization:Convert Map to a Json String
   String toJson() => json.encode(toMap());
 
   factory BannerModel.fromJson(Map<String, dynamic> map) {

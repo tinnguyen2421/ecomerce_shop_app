@@ -17,7 +17,7 @@ class BannerController {
           "Content-Type": 'application/json; charset=UTF-8'
         },
       );
-      print(response.body);
+      //print(response.body);
       if (response.statusCode == 200) //ok
       {
         List<dynamic> data = jsonDecode(response.body);

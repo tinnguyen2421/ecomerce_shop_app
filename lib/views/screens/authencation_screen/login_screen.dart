@@ -1,28 +1,36 @@
-import 'dart:math';
-
 import 'package:ecomerce_shop_app/controllers/auth_controller.dart';
 import 'package:ecomerce_shop_app/views/screens/authencation_screen/register_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
+  const LoginScreen({super.key});
+
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+class _LoginScreenState extends ConsumerState<LoginScreen> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final AuthController _authController = AuthController();
-  late String email;
-  late String password;
   bool isLoading = false;
+
+  late String email;
+
+  late String password;
 
   loginUser() async {
     setState(() {
       isLoading = true;
     });
     await _authController
-        .signInUsers(context: context, email: email, password: password)
+        .signInUsers(
+      context: context,
+      email: email,
+      password: password,
+      ref: ref,
+    )
         .whenComplete(() {
       setState(() {
         isLoading = false;
@@ -41,31 +49,31 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Center(
           child: SingleChildScrollView(
             child: Form(
-              key: _formkey,
+              key: _formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Đăng nhập tài khoản của bạn",
+                    "Login Your Account",
                     style: GoogleFonts.getFont(
                       'Lato',
-                      color: Color(0xFF0d120E),
+                      color: const Color(0xFF0d120E),
                       fontWeight: FontWeight.bold,
                       letterSpacing: 0.2,
                       fontSize: 23,
                     ),
                   ),
                   Text(
-                    'để khám phá sự độc đáo ',
+                    'To Explore the world exclusives',
                     style: GoogleFonts.getFont(
                       'Lato',
-                      color: Color(0xFF0d120E),
+                      color: const Color(0xFF0d120E),
                       fontSize: 14,
                       letterSpacing: 0.2,
                     ),
                   ),
                   Image.asset(
-                    'assets/images/illustrating.png',
+                    'assets/images/Illustration.png',
                     width: 200,
                     height: 200,
                   ),
@@ -74,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Text(
                       'Email',
                       style: GoogleFonts.getFont(
-                        "Nunito Sans",
+                        'Nunito Sans',
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.2,
                       ),
@@ -86,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Vui lòng nhập email';
+                        return 'enter your email';
                       } else {
                         return null;
                       }
@@ -99,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         focusedBorder: InputBorder.none,
                         enabledBorder: InputBorder.none,
-                        labelText: 'Email',
+                        labelText: 'enter your email',
                         labelStyle: GoogleFonts.getFont(
                           "Nunito Sans",
                           fontSize: 14,
@@ -108,13 +116,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         prefixIcon: Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Image.asset(
-                            'assets/icons/email_icon.png',
+                            'assets/icons/email.png',
                             width: 20,
                             height: 20,
                           ),
                         )),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   TextFormField(
@@ -123,52 +131,54 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Vui lòng nhập mật khẩu';
+                        return 'enter your password';
                       } else {
                         return null;
                       }
                     },
                     decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        filled: true,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(9),
+                      fillColor: Colors.white,
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(9),
+                      ),
+                      focusedBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      labelText: 'enter your password',
+                      labelStyle: GoogleFonts.getFont(
+                        "Nunito Sans",
+                        fontSize: 14,
+                        letterSpacing: 0.1,
+                      ),
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Image.asset(
+                          'assets/icons/password.png',
+                          width: 20,
+                          height: 20,
                         ),
-                        focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        labelText: 'Mật khẩu',
-                        labelStyle: GoogleFonts.getFont(
-                          "Nunito Sans",
-                          fontSize: 14,
-                          letterSpacing: 0.1,
-                        ),
-                        prefixIcon: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Image.asset(
-                            'assets/icons/password_icon.png',
-                            width: 20,
-                            height: 20,
-                          ),
-                        ),
-                        suffixIcon: Icon(Icons.visibility)),
+                      ),
+                      suffixIcon: IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.visibility),
+                      ),
+                    ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   InkWell(
                     onTap: () {
-                      if (_formkey.currentState!.validate()) {
+                      if (_formKey.currentState!.validate()) {
                         loginUser();
-                      } else {
-                        print("error $e");
-                      }
+                      } else {}
                     },
                     child: Container(
                       width: 319,
                       height: 50,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
-                        gradient: LinearGradient(
+                        gradient: const LinearGradient(
                           colors: [
                             Color(0xFF102DE1),
                             Color(0xCC0D6EFF),
@@ -189,7 +199,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 decoration: BoxDecoration(
                                   border: Border.all(
                                     width: 12,
-                                    color: Color(0xFF103DE5),
+                                    color: const Color(0xFF103DE5),
                                   ),
                                   borderRadius: BorderRadius.circular(30),
                                 ),
@@ -206,10 +216,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                 height: 5,
                                 clipBehavior: Clip.antiAlias,
                                 decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(
-                                      3,
-                                    )),
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(
+                                    3,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -229,32 +240,34 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           Center(
-                            child: isLoading
-                                ? CircularProgressIndicator(
-                                    color: Colors.white,
-                                  )
-                                : Text(
-                                    'Đăng nhập',
-                                    style: GoogleFonts.getFont('Lato',
+                              child: isLoading
+                                  ? const CircularProgressIndicator(
+                                      color: Colors.white,
+                                    )
+                                  : Text(
+                                      'Sign in',
+                                      style: GoogleFonts.getFont(
+                                        'Lato',
                                         color: Colors.white,
                                         fontSize: 18,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                          )
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ))
                         ],
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Bạn chưa có tài khoản ?',
+                        'Need an Account?',
                         style: GoogleFonts.roboto(
                           fontWeight: FontWeight.w500,
+                          letterSpacing: 1,
                         ),
                       ),
                       InkWell(
@@ -265,11 +278,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           }));
                         },
                         child: Text(
-                          'Đăng kí ngay!',
+                          'Sign Up',
                           style: GoogleFonts.roboto(
-                            color: Color(
-                              0xFF103DE5,
-                            ),
+                            color: Color(0xFF103DE5),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
