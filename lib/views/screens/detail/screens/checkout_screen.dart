@@ -415,6 +415,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                       var item = entry.value;
                       _orderController.uploadOrders(
                         id: '',
+                        productId: item.productId,
                         fullName: ref.read(userProvider)!.fullName,
                         email: ref.read(userProvider)!.email,
                         state: ref.read(userProvider)!.state,

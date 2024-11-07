@@ -38,27 +38,27 @@ class _MainScreenState extends State<MainScreen> {
           type: BottomNavigationBarType.fixed,
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
+              icon: Icon(Icons.home_outlined),
               label: "Trang chủ",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.favorite),
+              icon: Icon(Icons.favorite_outline),
               label: "Yêu thích",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.category),
+              icon: Icon(Icons.category_outlined),
               label: "Thể loại",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.store),
+              icon: Icon(Icons.store_mall_directory_outlined),
               label: "Cửa hàng",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.shop),
+              icon: Icon(Icons.shopping_bag_outlined),
               label: "Giỏ hàng",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.person),
+              icon: Icon(Icons.person_2_outlined),
               label: "Tài khoản",
             )
           ]),

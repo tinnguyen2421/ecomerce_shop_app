@@ -79,7 +79,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
   @override
   Widget build(BuildContext context) {
     final buyerId = ref.read(userProvider)!.id;
-    print(buyerId);
+    print("buyer id:" + buyerId);
     //fetch the delivered order count when the widget  build
     ref
         .read(deliveredOrderCountProvider.notifier)
@@ -91,6 +91,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     final cartData = ref.read(cartProvider);
     final favoriteCount = ref.read(favoriteProvider);
     print(user!.email);
+    print(deliveredCount);
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(

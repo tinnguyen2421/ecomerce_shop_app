@@ -1,4 +1,5 @@
 import 'package:ecomerce_shop_app/controllers/auth_controller.dart';
+import 'package:ecomerce_shop_app/global_variables.dart';
 import 'package:ecomerce_shop_app/views/screens/authencation_screen/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,6 +16,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final AuthController _authController = AuthController();
   bool isLoading = false;
+  bool isPasswordVisible = false;
 
   late String email;
 
@@ -73,7 +75,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   ),
                   Image.asset(
-                    'assets/images/Illustration.png',
+                    'assets/images/illustrating.png',
                     width: 200,
                     height: 200,
                   ),
@@ -95,6 +97,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'enter your email';
+                      } else if (!RegExp(emailValid).hasMatch(value)) {
+                        return 'Enter a valid email';
                       } else {
                         return null;
                       }
@@ -129,6 +133,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     onChanged: (value) {
                       password = value;
                     },
+                    obscureText: !isPasswordVisible,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'enter your password';
@@ -159,10 +164,35 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                       ),
                       suffixIcon: IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.visibility),
+                        onPressed: () {
+                          setState(() {
+                            isPasswordVisible = !isPasswordVisible;
+                          });
+                        },
+                        icon: Icon(
+                          isPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
                       ),
                     ),
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      const Spacer(),
+                      GestureDetector(
+                        // onTap: () => Navigator.pushNamed(
+                        //     context, ForgotPasswordScreen.routeName),
+                        child: const Text(
+                          "Forgot password?",
+                          style: TextStyle(
+                              color: Color(0xFF103DE5),
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      )
+                    ],
                   ),
                   const SizedBox(
                     height: 20,
@@ -286,7 +316,47 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                       ),
                     ],
-                  )
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  //logo
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.facebook, color: Colors.blue),
+                        iconSize: 40,
+                        onPressed: () {
+                          // Handle Facebook login
+                        },
+                      ),
+                      const SizedBox(width: 20),
+                      IconButton(
+                        icon: Image.asset(
+                          'assets/icons/google.png',
+                          height: 33,
+                          width: 33,
+                        ),
+                        iconSize: 40,
+                        onPressed: () {
+                          // Chuyển hướng đến YouTubeVideoPage
+                        },
+                      ),
+                      const SizedBox(width: 20),
+                      IconButton(
+                        icon: Image.asset(
+                          'assets/icons/apple.png',
+                          height: 45,
+                          width: 45,
+                        ),
+                        iconSize: 40,
+                        onPressed: () {
+                          // Chuyển hướng đến YouTubeVideoPage
+                        },
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),

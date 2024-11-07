@@ -34,6 +34,7 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
         print('Error fetching order:$e');
       }
     }
+    print("user id:" + user!.id);
   }
 
   Future<void> _deleteOrder(String orderId) async {
@@ -129,6 +130,7 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
               itemCount: orders.length,
               itemBuilder: (context, index) {
                 final Order order = orders[index];
+
                 return Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 25, vertical: 25),

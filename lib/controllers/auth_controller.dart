@@ -115,7 +115,7 @@ class AuthController {
       ref.read(userProvider.notifier).signOut();
       ref.read(cartProvider.notifier).signOut();
       ref.read(favoriteProvider.notifier).signOut();
-      ref.read(orderProvider.notifier).signOut();
+      //ref.read(orderProvider.notifier).signOut();
       ref.read(deliveredOrderCountProvider.notifier).resetCount();
       Navigator.pushAndRemoveUntil(
         context,

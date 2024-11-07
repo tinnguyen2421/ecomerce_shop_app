@@ -15,7 +15,7 @@ class HomeScreen extends StatelessWidget {
           preferredSize:
               Size.fromHeight(MediaQuery.of(context).size.height * 0.2),
           child: const HeaderWidget()),
-      body: SingleChildScrollView(
+      body: const SingleChildScrollView(
         child: Column(
           children: [
             BannerWidget(),

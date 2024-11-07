@@ -10,6 +10,7 @@ class OrderController {
   //function to upload orders
   uploadOrders({
     required String id,
+    required String productId,
     required String fullName,
     required String email,
     required String state,
@@ -31,6 +32,7 @@ class OrderController {
       String? token = preferences.getString("auth_token");
       final Order order = Order(
         id: id,
+        productId: productId,
         fullName: fullName,
         email: email,
         state: state,

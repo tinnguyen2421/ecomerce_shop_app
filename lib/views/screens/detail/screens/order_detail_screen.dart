@@ -313,10 +313,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                               buyerId: widget.order.buyerId,
                                               email: widget.order.email,
                                               fullName: widget.order.fullName,
-                                              productId: widget.order.id,
+                                              productId: widget.order.productId,
                                               rating: rating,
                                               review: review,
                                               context: context);
+                                          print(widget.order.productId);
                                         },
                                         child: const Text(
                                           'Submit',
