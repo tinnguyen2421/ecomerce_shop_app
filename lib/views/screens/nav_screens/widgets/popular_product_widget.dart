@@ -1,6 +1,6 @@
 import 'package:ecomerce_shop_app/controllers/product_controller.dart';
 import 'package:ecomerce_shop_app/provider/product_provider.dart';
-import 'package:ecomerce_shop_app/views/screens/nav_screens/widgets/product_item_widget.dart';
+import 'package:ecomerce_shop_app/views/screens/nav_screens/widgets/product_item_widget/popular_product_item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -43,7 +43,7 @@ class _PopularProductWidgetState extends ConsumerState<PopularProductWidget> {
   Widget build(BuildContext context) {
     final products = ref.watch(productProvider);
     return SizedBox(
-      height: 256,
+      height: 180,
       child: isLoading
           ? const Center(
               child: CircularProgressIndicator(
@@ -55,7 +55,7 @@ class _PopularProductWidgetState extends ConsumerState<PopularProductWidget> {
               itemCount: products.length,
               itemBuilder: (context, index) {
                 final product = products[index];
-                return ProductItemWidget(
+                return PopularProductItemWidget(
                   product: product,
                 );
               }),

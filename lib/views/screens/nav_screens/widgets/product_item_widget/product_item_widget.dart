@@ -44,7 +44,7 @@ class _ProductItemWidgetState extends ConsumerState<ProductItemWidget> {
             Container(
               height: 170,
               decoration: BoxDecoration(
-                color: Color(0xffF2F2F2),
+                color: const Color.fromARGB(255, 188, 184, 184),
                 borderRadius: BorderRadius.circular(24),
               ),
               child: Stack(
@@ -126,27 +126,33 @@ class _ProductItemWidgetState extends ConsumerState<ProductItemWidget> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            widget.product.averageRating == 0
-                ? SizedBox()
-                : Row(
-                    children: [
-                      Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                        size: 12,
-                      ),
-                      const SizedBox(
-                        width: 4,
-                      ),
-                      Text(
+            Row(
+              children: [
+                const Icon(
+                  Icons.star,
+                  color: Colors.amber,
+                  size: 12,
+                ),
+                const SizedBox(
+                  width: 4,
+                ),
+                widget.product.averageRating == 0
+                    ? Text(
+                        'No review yet',
+                        style: GoogleFonts.montserrat(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      )
+                    : Text(
                         widget.product.averageRating.toStringAsFixed(1),
                         style: GoogleFonts.montserrat(
                           fontWeight: FontWeight.bold,
                           fontSize: 12,
                         ),
                       ),
-                    ],
-                  ),
+              ],
+            ),
             const SizedBox(
               height: 4,
             ),

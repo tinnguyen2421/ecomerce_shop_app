@@ -1,3 +1,4 @@
+import 'package:ecomerce_shop_app/views/screens/nav_screens/widgets/all_product_widget.dart';
 import 'package:ecomerce_shop_app/views/screens/nav_screens/widgets/banner_widget.dart';
 import 'package:ecomerce_shop_app/views/screens/nav_screens/widgets/category_item_widget.dart';
 import 'package:ecomerce_shop_app/views/screens/nav_screens/widgets/header_widget.dart';
@@ -25,6 +26,8 @@ class HomeScreen extends StatelessWidget {
             ReusableTextWidget(
                 title: 'Top Rated Products', subtitle: 'View all'),
             TopRatedProductWidget(),
+            ReusableTextWidget(title: 'All product', subtitle: ''),
+            AllProductWidget(),
           ],
         ),
       ),

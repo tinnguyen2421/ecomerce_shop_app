@@ -6,7 +6,7 @@ import 'package:ecomerce_shop_app/models/subcategory.dart';
 import 'package:ecomerce_shop_app/views/screens/detail/screens/widgets/inner_banner_widget.dart';
 import 'package:ecomerce_shop_app/views/screens/detail/screens/widgets/inner_header_widget.dart';
 import 'package:ecomerce_shop_app/views/screens/detail/screens/widgets/subcategory_title_widget.dart';
-import 'package:ecomerce_shop_app/views/screens/nav_screens/widgets/product_item_widget.dart';
+import 'package:ecomerce_shop_app/views/screens/nav_screens/widgets/product_item_widget/product_item_widget.dart';
 import 'package:ecomerce_shop_app/views/screens/nav_screens/widgets/reusable_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

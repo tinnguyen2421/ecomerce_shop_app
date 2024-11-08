@@ -5,7 +5,6 @@ import 'package:ecomerce_shop_app/models/user.dart';
 import 'package:ecomerce_shop_app/provider/cart_provider.dart';
 import 'package:ecomerce_shop_app/provider/delivered_order_count_provider.dart';
 import 'package:ecomerce_shop_app/provider/favorite_provider.dart';
-import 'package:ecomerce_shop_app/provider/order_provider.dart';
 import 'package:ecomerce_shop_app/provider/user_provider.dart';
 import 'package:ecomerce_shop_app/services/manage_http_respone.dart';
 import 'package:ecomerce_shop_app/views/screens/authencation_screen/login_screen.dart';

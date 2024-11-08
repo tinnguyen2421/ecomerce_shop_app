@@ -1,7 +1,7 @@
 import 'package:ecomerce_shop_app/controllers/product_controller.dart';
 import 'package:ecomerce_shop_app/provider/product_provider.dart';
 import 'package:ecomerce_shop_app/provider/top_rated_product_provider.dart';
-import 'package:ecomerce_shop_app/views/screens/nav_screens/widgets/product_item_widget.dart';
+import 'package:ecomerce_shop_app/views/screens/nav_screens/widgets/product_item_widget/top_rated_product_item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -44,7 +44,7 @@ class _TopRatedProductWidgetState extends ConsumerState<TopRatedProductWidget> {
   Widget build(BuildContext context) {
     final products = ref.watch(productProvider);
     return SizedBox(
-      height: 256,
+      height: 200,
       child: isLoading
           ? const Center(
               child: CircularProgressIndicator(
@@ -56,7 +56,7 @@ class _TopRatedProductWidgetState extends ConsumerState<TopRatedProductWidget> {
               itemCount: products.length,
               itemBuilder: (context, index) {
                 final product = products[index];
-                return ProductItemWidget(
+                return TopRatedProductItemWidget(
                   product: product,
                 );
               }),
