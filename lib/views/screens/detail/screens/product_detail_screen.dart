@@ -2,8 +2,10 @@ import 'package:ecomerce_shop_app/controllers/product_controller.dart';
 import 'package:ecomerce_shop_app/models/product.dart';
 import 'package:ecomerce_shop_app/provider/cart_provider.dart';
 import 'package:ecomerce_shop_app/provider/favorite_provider.dart';
+import 'package:ecomerce_shop_app/provider/product_review_provider.dart';
 import 'package:ecomerce_shop_app/provider/related_product_provider.dart';
 import 'package:ecomerce_shop_app/services/manage_http_respone.dart';
+import 'package:ecomerce_shop_app/views/screens/detail/screens/product_review_screen.dart';
 import 'package:ecomerce_shop_app/views/screens/nav_screens/widgets/product_item_widget/product_item_widget.dart';
 import 'package:ecomerce_shop_app/views/screens/nav_screens/widgets/reusable_text_widget.dart';
 import 'package:flutter/material.dart';
@@ -20,43 +22,7 @@ class ProductDetailScreen extends ConsumerStatefulWidget {
 }
 
 bool isExpanded = false;
-final List<Map<String, dynamic>> productReviews = [
-  {
-    'rating': 5,
-    'comment': 'Sản phẩm tuyệt vời, chất lượng tốt và dễ sử dụng!',
-    'userName': 'Nguyễn Văn A',
-    'userAvatar':
-        'https://www.example.com/avatar1.jpg', // Đường dẫn tới ảnh avatar
-  },
-  {
-    'rating': 4,
-    'comment': 'Chất lượng ổn, nhưng có một chút thiếu sót về thiết kế.',
-    'userName': 'Trần Thị B',
-    'userAvatar':
-        'https://www.example.com/avatar2.jpg', // Đường dẫn tới ảnh avatar
-  },
-  {
-    'rating': 3,
-    'comment': 'Sản phẩm bình thường, không có gì nổi bật.',
-    'userName': 'Lê Minh C',
-    'userAvatar':
-        'https://www.example.com/avatar3.jpg', // Đường dẫn tới ảnh avatar
-  },
-  {
-    'rating': 2,
-    'comment': 'Không giống như mô tả, tôi không hài lòng với sản phẩm.',
-    'userName': 'Phan Quân D',
-    'userAvatar':
-        'https://www.example.com/avatar4.jpg', // Đường dẫn tới ảnh avatar
-  },
-  {
-    'rating': 1,
-    'comment': 'Tôi không thích sản phẩm này chút nào.',
-    'userName': 'Vũ Mai E',
-    'userAvatar':
-        'https://www.example.com/avatar5.jpg', // Đường dẫn tới ảnh avatar
-  },
-];
+final List<Map<String, dynamic>> productReviews = [];
 
 class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   ScrollController _scrollController = ScrollController();
@@ -106,6 +72,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     final favoriteProviderData = ref.read(favoriteProvider.notifier);
     final cartData = ref.watch(cartProvider);
     final isInCart = cartData.containsKey(widget.product.id);
+    final reviewAsyncValue =
+        ref.watch(productReviewProvider(widget.product.id));
 
     return Scaffold(
       body: CustomScrollView(
@@ -407,7 +375,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                           ),
                         ],
                       )
-                    : SizedBox.shrink(),
+                    : const SizedBox.shrink(),
                 SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -416,58 +384,75 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                         title: 'Product Reviews',
                         subtitle: '',
                       ),
-                      ListView.builder(
-                        shrinkWrap:
-                            true, // Sử dụng shrinkWrap để tránh khoảng trống
-                        physics:
-                            NeverScrollableScrollPhysics(), // Tránh cuộn trong cuộn
-                        itemCount: productReviews.take(3).length,
-                        itemBuilder: (context, index) {
-                          final review = productReviews[index];
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Card(
-                              elevation: 2,
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
+                      reviewAsyncValue.when(
+                        data: (reviews) {
+                          if (reviews.isEmpty) {
+                            return const Center(child: Text("No reviews yet."));
+                          }
+                          return ListView.builder(
+                            shrinkWrap:
+                                true, // Sử dụng shrinkWrap để tránh khoảng trống
+                            physics:
+                                NeverScrollableScrollPhysics(), // Tránh cuộn trong cuộn
+                            itemCount: reviews
+                                .take(3)
+                                .length, // Giới hạn 3 phần tử đầu tiên
+                            itemBuilder: (context, index) {
+                              final review = reviews[index];
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Card(
+                                  elevation: 2,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        CircleAvatar(
-                                          backgroundImage: NetworkImage(
-                                              review['userAvatar']),
-                                          radius: 20,
+                                        Row(
+                                          children: [
+                                            const CircleAvatar(
+                                              backgroundImage: NetworkImage(
+                                                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlkhvRuhmiOPb7hnnwSVb4hKIzm2AnJ7aj9A&s'),
+                                              radius: 20,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Text(
+                                              review.fullName,
+                                              style: GoogleFonts.lato(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        const SizedBox(width: 8),
+                                        const SizedBox(height: 8),
+                                        buildStarRating(review.rating),
+                                        const SizedBox(height: 8),
                                         Text(
-                                          review['userName'],
-                                          style: GoogleFonts.lato(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold),
+                                          review.review,
+                                          style: GoogleFonts.lato(fontSize: 14),
                                         ),
                                       ],
                                     ),
-                                    const SizedBox(height: 8),
-                                    buildStarRating(
-                                        review['rating'].toDouble()),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      review['comment'],
-                                      style: GoogleFonts.lato(fontSize: 14),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ),
+                              );
+                            },
                           );
                         },
+                        loading: () =>
+                            const Center(child: CircularProgressIndicator()),
+                        error: (error, stackTrace) =>
+                            Center(child: Text("Error: $error")),
                       ),
                       GestureDetector(
                         onTap: () {
-                          // Hành động khi bấm vào "Xem Thêm"
-                          print("Xem Thêm clicked");
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return ProductReviewScreen(
+                                productId: widget.product.id);
+                          }));
                         },
                         child: const Padding(
                           padding: EdgeInsets.symmetric(

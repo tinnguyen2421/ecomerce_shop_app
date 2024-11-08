@@ -38,7 +38,9 @@ class ProductReview {
       email: map['email'] as String,
       fullName: map['fullName'] as String,
       productId: map['productId'] as String,
-      rating: map['rating'] as double,
+      rating: (map['rating'] is int
+          ? (map['rating'] as int).toDouble()
+          : map['rating']) as double, // Chuyển đổi nếu là int
       review: map['review'] as String,
     );
   }
