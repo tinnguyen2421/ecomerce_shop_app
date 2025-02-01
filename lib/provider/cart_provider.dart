@@ -116,7 +116,9 @@ class CartNotifier extends StateNotifier<Map<String, Cart>> {
   void decrementCartItem(String productId) {
     if (state.containsKey(productId)) {
       state[productId]!.quantity--;
-
+      if (state[productId]!.quantity == 0) {
+        removeCartItem(productId);
+      } else {}
       //Notify listerners that the state has changed
       state = {...state};
       _saveCartItems();

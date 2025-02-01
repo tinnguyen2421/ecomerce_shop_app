@@ -8,6 +8,7 @@ import 'package:ecomerce_shop_app/provider/favorite_provider.dart';
 import 'package:ecomerce_shop_app/provider/user_provider.dart';
 import 'package:ecomerce_shop_app/services/manage_http_respone.dart';
 import 'package:ecomerce_shop_app/views/screens/authencation_screen/login_screen.dart';
+import 'package:ecomerce_shop_app/views/screens/authencation_screen/otp_screen.dart';
 import 'package:ecomerce_shop_app/views/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -45,7 +46,9 @@ class AuthController {
           onSuccess: () {
             Navigator.pushAndRemoveUntil(context,
                 MaterialPageRoute(builder: (context) {
-              return LoginScreen();
+              return OtpScreen(
+                email: email,
+              );
             }), (route) => false);
             showSnackBar(context, 'Account has been created for you');
           });
@@ -84,22 +87,26 @@ class AuthController {
             preferences.setString('auth_token', token);
 
             //Encode the user data recived from the backend as json
-            final userJson = jsonEncode(jsonDecode(response.body)['user']);
+            final userJson = jsonEncode(jsonDecode(response.body));
 
             //update the application state with the user data using Riverpod
-            ref.read(userProvider.notifier).setUser(userJson);
+            ref.read(userProvider.notifier).setUser(response.body);
 
             //store the data in sharePreference  for future use
 
             await preferences.setString('user', userJson);
 
-            Navigator.pushAndRemoveUntil(context,
-                MaterialPageRoute(builder: (context) {
-              return MainScreen();
-            }), (route) => false);
+            if (ref.read(userProvider)!.token.isNotEmpty) {
+              Navigator.pushAndRemoveUntil(context,
+                  MaterialPageRoute(builder: (context) {
+                return MainScreen();
+              }), (route) => false);
+            }
             showSnackBar(context, 'Logged in');
           });
-    } catch (e) {}
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
   }
 
   //Signout
@@ -178,6 +185,182 @@ class AuthController {
       //catch any error that occure during the proccess
       //show an error message to the user if the update fails
       showSnackBar(context, 'Error updating location');
+    }
+  }
+
+//Verify Otp Method
+  Future<void> verifyOtp({
+    required BuildContext context,
+    required String email,
+    required String otp,
+  }) async {
+    try {
+      http.Response response = await http.post(
+        Uri.parse('$uri/api/verify-otp'),
+        body: jsonEncode({
+          "email": email,
+          "otp": otp,
+        }),
+        headers: <String, String>{
+          "Content-Type": 'application/json; charset=UTF-8'
+        },
+      );
+      manageHttpRespond(
+          response: response,
+          context: context,
+          onSuccess: () {
+            Navigator.pushAndRemoveUntil(context,
+                MaterialPageRoute(builder: (context) {
+              return const LoginScreen();
+            }), (route) => false);
+            showSnackBar(context, 'Account verified .Please login.');
+          });
+    } catch (e) {
+      showSnackBar(context, "Error Verifying OT:$e");
+    }
+  }
+
+  Future<void> resendOtp({
+    required BuildContext context,
+    required String email,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$uri/api/resend-otp'),
+        body: jsonEncode({
+          "email": email,
+        }),
+        headers: <String, String>{
+          "Content-Type": 'application/json; charset=UTF-8',
+        },
+      );
+
+      manageHttpRespond(
+        response: response,
+        context: context,
+        onSuccess: () {
+          final data = jsonDecode(response.body);
+          showSnackBar(context, data['msg']);
+        },
+      );
+    } catch (e) {
+      showSnackBar(context, 'Có lỗi xảy ra khi gửi lại OTP: $e');
+    }
+  }
+
+  Future<void> deleteAccount(
+      {required BuildContext context,
+      required String id,
+      required WidgetRef ref}) async {
+    try {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String? token = preferences.getString('auth_token');
+      if (token == null) {
+        showSnackBar(context, 'You need to login to perform this action');
+        return;
+      }
+      http.Response response = await http.delete(
+        Uri.parse('$uri/api/user/delete-account/$id'),
+        headers: <String, String>{
+          "Content-Type": 'application/json; charset=UTF-8',
+          'x-auth-token': token,
+        },
+      );
+      manageHttpRespond(
+          response: response,
+          context: context,
+          onSuccess: () async {
+            //handle successfull deletion, navigate the user back the the login screen
+            //clear user data from sharePreferences
+            await preferences.remove('auth_token');
+            await preferences.remove('user');
+            //clear the user data from the provider state
+            ref.read(userProvider.notifier).signOut();
+            //Redirect to the login screen after successful deletion
+            showSnackBar(context, 'Account deleted successfully');
+            Navigator.pushAndRemoveUntil(context,
+                MaterialPageRoute(builder: (context) {
+              return const LoginScreen();
+            }), (route) => false);
+          });
+    } catch (e) {
+      showSnackBar(context, 'Error deleting account $e');
+    }
+  }
+
+  Future<void> deactivateAccount({
+    required BuildContext context,
+    required String id,
+    required WidgetRef ref,
+  }) async {
+    try {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String? token = preferences.getString('auth_token');
+      if (token == null) {
+        showSnackBar(context, 'You need to login to perform this action');
+        return;
+      }
+
+      http.Response response = await http.put(
+        Uri.parse('$uri/api/user/deactivate-account/$id'),
+        headers: <String, String>{
+          "Content-Type": 'application/json; charset=UTF-8',
+          'x-auth-token': token,
+        },
+      );
+
+      manageHttpRespond(
+        response: response,
+        context: context,
+        onSuccess: () async {
+          // Xử lý thành công: chuyển người dùng về màn hình đăng nhập
+          await preferences
+              .remove('auth_token'); // Xóa token khỏi SharedPreferences
+          await preferences
+              .remove('user'); // Xóa dữ liệu người dùng khỏi SharedPreferences
+          ref
+              .read(userProvider.notifier)
+              .signOut(); // Xóa dữ liệu người dùng khỏi provider state
+
+          showSnackBar(context, 'Account deactivated successfully');
+          Navigator.pushAndRemoveUntil(context,
+              MaterialPageRoute(builder: (context) {
+            return const LoginScreen();
+          }), (route) => false); // Điều hướng tới màn hình đăng nhập
+        },
+      );
+    } catch (e) {
+      showSnackBar(context, 'Error deactivating account: $e');
+    }
+  }
+
+  getUserData(context, WidgetRef ref) async {
+    try {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String? token = preferences.getString('auth_token');
+      if (token == null) {
+        preferences.setString('auth_token', '');
+      }
+      var tokenResponse = await http.post(
+        Uri.parse('$uri/tokenIsValid'),
+        headers: <String, String>{
+          "Content-Type": 'application/json; charset=UTF-8',
+          'x-auth-token': token!,
+        },
+      );
+      var response = jsonDecode(tokenResponse.body);
+      if (response == true) {
+        http.Response userResponse = await http.get(
+          Uri.parse('$uri/'),
+          headers: <String, String>{
+            "Content-Type": 'application/json; charset=UTF-8',
+            'x-auth-token': token,
+          },
+        );
+        ref.read(userProvider.notifier).setUser(userResponse.body);
+      }
+    } catch (e) {
+      showSnackBar(context, e.toString());
     }
   }
 }

@@ -1,10 +1,11 @@
+import 'package:flutter/material.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:ecomerce_shop_app/views/screens/nav_screens/account_screen.dart';
 import 'package:ecomerce_shop_app/views/screens/nav_screens/cart_screen.dart';
 import 'package:ecomerce_shop_app/views/screens/nav_screens/category_screen.dart';
 import 'package:ecomerce_shop_app/views/screens/nav_screens/favorite_screen.dart';
 import 'package:ecomerce_shop_app/views/screens/nav_screens/home_screen.dart';
 import 'package:ecomerce_shop_app/views/screens/nav_screens/stores_screen.dart';
-import 'package:flutter/material.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -21,48 +22,33 @@ class _MainScreenState extends State<MainScreen> {
     const CategoryScreen(),
     const StoresScreen(),
     const CartScreen(),
-    AccountScreen()
+    const AccountScreen(),
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-          selectedItemColor: Colors.purple,
-          unselectedItemColor: Colors.grey,
-          currentIndex: _pageIndex,
-          onTap: (value) {
-            setState(() {
-              _pageIndex = value;
-            });
-          },
-          type: BottomNavigationBarType.fixed,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              label: "Trang chủ",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.favorite_outline),
-              label: "Yêu thích",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.category_outlined),
-              label: "Thể loại",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.store_mall_directory_outlined),
-              label: "Cửa hàng",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_bag_outlined),
-              label: "Giỏ hàng",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_2_outlined),
-              label: "Tài khoản",
-            )
-          ]),
       body: _pages[_pageIndex],
+      bottomNavigationBar: CurvedNavigationBar(
+        index: _pageIndex,
+        onTap: (index) {
+          setState(() {
+            _pageIndex = index;
+          });
+        },
+        height: 60.0,
+        color: const Color(0xFF103DE5),
+        buttonBackgroundColor: const Color(0xFF103DE5),
+        backgroundColor: Colors.transparent,
+        items: const <Widget>[
+          Icon(Icons.home, size: 27, color: Colors.white),
+          Icon(Icons.favorite, size: 27, color: Colors.white),
+          Icon(Icons.category, size: 27, color: Colors.white),
+          Icon(Icons.store_mall_directory, size: 27, color: Colors.white),
+          Icon(Icons.shopping_bag, size: 27, color: Colors.white),
+          Icon(Icons.person_2, size: 27, color: Colors.white),
+        ],
+      ),
     );
   }
 }

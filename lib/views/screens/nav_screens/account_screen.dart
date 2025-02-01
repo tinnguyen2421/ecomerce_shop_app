@@ -28,14 +28,14 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             title: Text(
-              'Are you sure',
+              'Bạn chắc chứ',
               style: GoogleFonts.montserrat(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
               ),
             ),
             content: Text(
-              'Do you really want to logout ?',
+              'Bạn có thực sự muốn đăng xuất ?',
               style: GoogleFonts.montserrat(
                 fontSize: 16,
                 color: Colors.grey.shade700,
@@ -47,7 +47,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                   Navigator.of(context).pop();
                 },
                 child: Text(
-                  'Cancel',
+                  'Hủy',
                   style: GoogleFonts.montserrat(
                     fontSize: 16,
                     color: Colors.grey,
@@ -63,7 +63,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                   await _authController.signOutUser(context: context, ref: ref);
                 },
                 child: Text(
-                  "Logout",
+                  "Đăng xuất",
                   style: GoogleFonts.montserrat(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -79,7 +79,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
   @override
   Widget build(BuildContext context) {
     final buyerId = ref.read(userProvider)!.id;
-    print("buyer id:" + buyerId);
+
     //fetch the delivered order count when the widget  build
     ref
         .read(deliveredOrderCountProvider.notifier)
@@ -158,7 +158,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                             ),
                           )
                         : Text(
-                            'User',
+                            'Người dùng',
                             style: GoogleFonts.montserrat(
                               color: Colors.white,
                               fontSize: 22,
@@ -216,7 +216,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                             left: 212,
                             top: 99,
                             child: Text(
-                              "Completed",
+                              "Hoàn tất !",
                               style: GoogleFonts.quicksand(
                                 fontSize: 14,
                                 color: Colors.white,
@@ -270,7 +270,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                             left: 108,
                             top: 99,
                             child: Text(
-                              'Favorite',
+                              'Yêu thích',
                               style: GoogleFonts.montserrat(
                                 color: Colors.white,
                                 letterSpacing: 0.3,
@@ -324,7 +324,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                             left: 13,
                             top: 99,
                             child: Text(
-                              'Cart',
+                              'Giỏ hàng',
                               style: GoogleFonts.montserrat(
                                   fontSize: 14,
                                   color: Colors.white,
@@ -380,7 +380,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 'assets/icons/orders.png',
               ),
               title: Text(
-                'Track your order',
+                'Theo dõi đơn hàng',
                 style: GoogleFonts.montserrat(
                   fontWeight: FontWeight.bold,
                 ),
@@ -399,22 +399,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 'assets/icons/history.png',
               ),
               title: Text(
-                'History',
-                style: GoogleFonts.montserrat(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            ListTile(
-              onTap: () {},
-              leading: Image.asset(
-                'assets/icons/help.png',
-              ),
-              title: Text(
-                'Help',
+                'Lịch sử đơn hàng',
                 style: GoogleFonts.montserrat(
                   fontWeight: FontWeight.bold,
                 ),
@@ -431,12 +416,66 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 'assets/icons/logout.png',
               ),
               title: Text(
-                'Logout',
+                'Đăng xuất',
                 style: GoogleFonts.montserrat(
                   fontWeight: FontWeight.bold,
                 ),
               ),
-            )
+            ),
+            ListTile(
+              onTap: () async {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text(
+                        'Xác nhận xóa tài khoản',
+                        style:
+                            GoogleFonts.montserrat(fontWeight: FontWeight.bold),
+                      ),
+                      content: Text(
+                        'Bạn có chắc chắn muốn xóa tài khoản ? Hành động này không thể hoàn tác.',
+                        style: GoogleFonts.montserrat(),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            'Hủy',
+                            style: GoogleFonts.montserrat(color: Colors.grey),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            Navigator.pop(context);
+                            await _authController.deleteAccount(
+                              context: context,
+                              id: user.id,
+                              ref: ref,
+                            );
+                          },
+                          child: Text(
+                            'Xóa',
+                            style: GoogleFonts.montserrat(color: Colors.red),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              leading: Image.asset(
+                'assets/icons/help.png',
+              ),
+              title: Text(
+                'Xóa tài khoản',
+                style: GoogleFonts.montserrat(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
           ],
         ),
       ),

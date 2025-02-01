@@ -1,11 +1,15 @@
 import 'package:ecomerce_shop_app/controllers/product_controller.dart';
+import 'package:ecomerce_shop_app/controllers/vendor_controller.dart';
 import 'package:ecomerce_shop_app/models/product.dart';
 import 'package:ecomerce_shop_app/provider/cart_provider.dart';
 import 'package:ecomerce_shop_app/provider/favorite_provider.dart';
 import 'package:ecomerce_shop_app/provider/product_review_provider.dart';
 import 'package:ecomerce_shop_app/provider/related_product_provider.dart';
+import 'package:ecomerce_shop_app/provider/vendor_provider.dart';
 import 'package:ecomerce_shop_app/services/manage_http_respone.dart';
 import 'package:ecomerce_shop_app/views/screens/detail/screens/product_review_screen.dart';
+import 'package:ecomerce_shop_app/views/screens/detail/screens/vendor_products_screen.dart';
+import 'package:ecomerce_shop_app/views/screens/nav_screens/cart_screen.dart';
 import 'package:ecomerce_shop_app/views/screens/nav_screens/widgets/product_item_widget/product_item_widget.dart';
 import 'package:ecomerce_shop_app/views/screens/nav_screens/widgets/reusable_text_widget.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +37,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     super.initState();
     _scrollController.addListener(_scrollListener);
     _fetchProduct();
+    _fetchVendor();
   }
 
   @override
@@ -65,8 +70,40 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     }
   }
 
+  Future<void> _fetchVendor() async {
+    final vendorController = VendorController();
+    try {
+      // Lấy tất cả các vendor từ API
+      final vendors = await vendorController.loadVendors();
+
+      // Cập nhật state của vendorProvider với danh sách các vendor
+      ref.read(vendorProvider.notifier).setVendors(vendors);
+
+      // Lấy danh sách các vendor từ provider
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final vendorList = ref.watch(vendorProvider);
+
+    // Tìm vendor có id trùng với widget.product.vendorId
+    final vendor = vendorList.firstWhere(
+      (v) => v.id == widget.product.vendorId,
+      // orElse: () => Vendor(
+      //     id: '',
+      //     fullName: '',
+      //     email: '',
+      //     state: '',
+      //     city: '',
+      //     locality: '',
+      //     role: '',
+      //     password: '',
+      //     token: ''),
+    );
+
     final relatedProduct = ref.watch(relatedProductProvider);
     final cartProviderData = ref.read(cartProvider.notifier);
     final favoriteProviderData = ref.read(favoriteProvider.notifier);
@@ -75,6 +112,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     final reviewAsyncValue =
         ref.watch(productReviewProvider(widget.product.id));
 
+    final isShortDescription =
+        widget.product.description.split('\n').length <= 3;
     return Scaffold(
       body: CustomScrollView(
         controller: _scrollController,
@@ -101,8 +140,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
               ),
             ),
             leading: Container(
-              width: 36, // Kích thước container của icon back
-              height: 36, // Kích thước container của icon back
+              width: 36,
+              height: 36,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 boxShadow: [
@@ -125,11 +164,10 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
             ),
             actions: [
               Padding(
-                padding:
-                    EdgeInsets.only(right: 8.0), // Thêm khoảng cách từ lề phải
+                padding: const EdgeInsets.only(right: 8.0),
                 child: Container(
-                  width: 36, // Kích thước container của icon favorite
-                  height: 36, // Kích thước container của icon favorite
+                  width: 36,
+                  height: 36,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     boxShadow: [
@@ -148,16 +186,15 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                         ? Icon(
                             Icons.favorite,
                             color: _isAppBarExpanded ? Colors.pink : Colors.red,
-                            size: 24, // Kích thước icon giống nhau
+                            size: 24,
                           )
                         : Icon(
                             Icons.favorite_border,
                             color:
                                 _isAppBarExpanded ? Colors.pink : Colors.white,
-                            size: 24, // Kích thước icon giống nhau
+                            size: 24,
                           ),
                     onPressed: () {
-                      // Thêm hoặc bỏ sản phẩm khỏi danh sách yêu thích
                       if (ref
                           .read(favoriteProvider)
                           .containsKey(widget.product.id)) {
@@ -182,8 +219,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                           ref
                                   .read(favoriteProvider)
                                   .containsKey(widget.product.id)
-                              ? 'Removed from favorites'
-                              : 'Added to favorites');
+                              ? 'Thêm vào danh sách yêu thích'
+                              : 'Đã xóa khỏi danh sách yêu thích');
                     },
                   ),
                 ),
@@ -192,7 +229,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           ),
           SliverList(
             delegate: SliverChildListDelegate(
-              [
+              <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
@@ -205,7 +242,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                           color: const Color(0xFF3C55EF),
                         ),
                       ),
-                      Text(" | "),
+                      const Text(" | "),
                       Text(
                         "(${widget.product.category})",
                         style: GoogleFonts.roboto(
@@ -235,8 +272,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                       const Icon(Icons.star, color: Colors.amber),
                       Text(
                         widget.product.totalRatings == 0
-                            ? "No review yet"
-                            : widget.product.averageRating.toString(),
+                            ? "Chưa có đánh giá"
+                            : widget.product.averageRating.toStringAsFixed(1),
                         style:
                             GoogleFonts.montserrat(fontWeight: FontWeight.bold),
                       ),
@@ -244,6 +281,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                     ],
                   ),
                 ),
+
                 InkWell(
                   onTap: () {},
                   child: Padding(
@@ -253,50 +291,72 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const ReusableTextWidget(
-                          title: 'Store Information',
+                          title: 'Thông tin cửa hàng',
                           subtitle: '',
                         ),
                         Row(
                           children: [
-                            const CircleAvatar(
-                              backgroundImage: NetworkImage(''),
+                            CircleAvatar(
+                              backgroundImage: vendor.storeImage != ""
+                                  ? NetworkImage(vendor.storeImage!)
+                                  : const NetworkImage(
+                                      "https://img.freepik.com/free-vector/shop-with-sign-we-are-open_52683-38687.jpg"),
                               radius: 28,
                             ),
                             const SizedBox(width: 12),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'vendor!.name',
-                                  style: GoogleFonts.lato(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+
+                            // Sử dụng Expanded để tên cửa hàng không bị tràn ra ngoài màn hình
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    vendor.fullName,
+                                    style: GoogleFonts.lato(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    maxLines: 1, // Giới hạn hiển thị 1 dòng
+                                    overflow: TextOverflow
+                                        .ellipsis, // Thêm dấu "..." nếu quá dài
                                   ),
-                                ),
-                                Text(
-                                  'active 24 minutes ago',
-                                  style: GoogleFonts.lato(
-                                      fontSize: 14, color: Colors.grey[600]),
-                                ),
-                                Text(
-                                  'address',
-                                  style: GoogleFonts.lato(
-                                      fontSize: 14, color: Colors.grey[600]),
-                                ),
-                              ],
+                                  Text(
+                                    'Hoạt động 24 phút trước',
+                                    style: GoogleFonts.lato(
+                                        fontSize: 14, color: Colors.grey[600]),
+                                  ),
+                                  Text(
+                                    vendor.storeDescription!,
+                                    style: GoogleFonts.lato(
+                                        fontSize: 14, color: Colors.grey[600]),
+                                  ),
+                                ],
+                              ),
                             ),
-                            const SizedBox(width: 70),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                TextButton(
-                                  onPressed: () {},
-                                  child: const Text('View Shop'),
-                                ),
-                              ],
+
+                            const SizedBox(width: 12),
+
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.push(context,
+                                          MaterialPageRoute(builder: (context) {
+                                        return VendorProductsScreen(
+                                          vendor: vendor,
+                                        );
+                                      }));
+                                    },
+                                    child: const Text('Xem cửa hàng'),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
-                        ),
+                        )
                       ],
                     ),
                   ),
@@ -307,7 +367,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Describe:",
+                        "Mô tả sản phẩm:",
                         style: GoogleFonts.lato(
                           fontSize: 17,
                           color: const Color(0xFF363330),
@@ -320,44 +380,47 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   padding: const EdgeInsets.only(left: 10, right: 64),
                   child: Text(
                     widget.product.description,
-                    maxLines: isExpanded ? null : 3,
+                    maxLines: isExpanded || isShortDescription ? null : 3,
                     style: GoogleFonts.lato(fontSize: 15),
                   ),
                 ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isExpanded = !isExpanded;
-                      });
-                    },
-                    child: Row(
-                      children: [
-                        Text(
-                          isExpanded ? "Thu Gọn" : "Xem Thêm",
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w600, color: Colors.pink),
-                        ),
-                        const SizedBox(width: 5),
-                        Icon(
-                          isExpanded
-                              ? Icons.arrow_upward
-                              : Icons.arrow_forward_ios,
-                          size: 12,
-                          color: Colors.pink,
-                        ),
-                      ],
+                // Nếu mô tả dài hơn 3 dòng, hiển thị nút "Xem thêm"
+                if (!isShortDescription)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 12),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isExpanded = !isExpanded;
+                        });
+                      },
+                      child: Row(
+                        children: [
+                          Text(
+                            isExpanded ? "Thu Gọn" : "Xem Thêm",
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: Colors.pink),
+                          ),
+                          const SizedBox(width: 5),
+                          Icon(
+                            isExpanded
+                                ? Icons.arrow_upward
+                                : Icons.arrow_forward_ios,
+                            size: 12,
+                            color: Colors.pink,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
                 relatedProduct.isNotEmpty
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const ReusableTextWidget(
-                            title: 'Related Products',
+                            title: 'Các sản phẩm liên quan',
                             subtitle: '',
                           ),
                           SizedBox(
@@ -381,64 +444,96 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const ReusableTextWidget(
-                        title: 'Product Reviews',
+                        title: 'Đánh giá sản phẩm',
                         subtitle: '',
                       ),
                       reviewAsyncValue.when(
                         data: (reviews) {
+                          // Kiểm tra nếu không có đánh giá
                           if (reviews.isEmpty) {
-                            return const Center(child: Text("No reviews yet."));
+                            return const Center(
+                                child: Text("Chưa có đánh giá nào."));
                           }
-                          return ListView.builder(
-                            shrinkWrap:
-                                true, // Sử dụng shrinkWrap để tránh khoảng trống
-                            physics:
-                                NeverScrollableScrollPhysics(), // Tránh cuộn trong cuộn
-                            itemCount: reviews
-                                .take(3)
-                                .length, // Giới hạn 3 phần tử đầu tiên
-                            itemBuilder: (context, index) {
-                              final review = reviews[index];
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Card(
-                                  elevation: 2,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
+
+                          // Nếu có đánh giá, hiển thị danh sách đánh giá
+                          return Column(
+                            children: [
+                              ListView.builder(
+                                shrinkWrap:
+                                    true, // Sử dụng shrinkWrap để tránh khoảng trống
+                                physics:
+                                    const NeverScrollableScrollPhysics(), // Tránh cuộn trong cuộn
+                                itemCount: reviews
+                                    .take(3)
+                                    .length, // Giới hạn 3 phần tử đầu tiên
+                                itemBuilder: (context, index) {
+                                  final review = reviews[index];
+                                  return Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Card(
+                                      elevation: 2,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            const CircleAvatar(
-                                              backgroundImage: NetworkImage(
-                                                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlkhvRuhmiOPb7hnnwSVb4hKIzm2AnJ7aj9A&s'),
-                                              radius: 20,
+                                            Row(
+                                              children: [
+                                                const CircleAvatar(
+                                                  backgroundImage: NetworkImage(
+                                                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlkhvRuhmiOPb7hnnwSVb4hKIzm2AnJ7aj9A&s'),
+                                                  radius: 20,
+                                                ),
+                                                const SizedBox(width: 8),
+                                                Text(
+                                                  review.fullName,
+                                                  style: GoogleFonts.lato(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                            const SizedBox(width: 8),
+                                            const SizedBox(height: 8),
+                                            buildStarRating(review.rating),
+                                            const SizedBox(height: 8),
                                             Text(
-                                              review.fullName,
+                                              review.review,
                                               style: GoogleFonts.lato(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                              ),
+                                                  fontSize: 14),
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(height: 8),
-                                        buildStarRating(review.rating),
-                                        const SizedBox(height: 8),
-                                        Text(
-                                          review.review,
-                                          style: GoogleFonts.lato(fontSize: 14),
-                                        ),
-                                      ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              // Hiển thị nút "Xem tất cả" nếu có ít hơn 3 đánh giá
+                              if (reviews.length > 3)
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) {
+                                      return ProductReviewScreen(
+                                          productId: widget.product.id);
+                                    }));
+                                  },
+                                  child: const Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 20.0),
+                                    child: Center(
+                                      child: Text(
+                                        "Xem tất cả",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.pink),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              );
-                            },
+                            ],
                           );
                         },
                         loading: () =>
@@ -446,44 +541,48 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                         error: (error, stackTrace) =>
                             Center(child: Text("Error: $error")),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return ProductReviewScreen(
-                                productId: widget.product.id);
-                          }));
-                        },
-                        child: const Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 20.0), // Tăng khoảng trống
-                          child: Center(
-                            child: Text(
-                              "Xem tất cả",
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.pink),
-                            ),
-                          ),
-                        ),
-                      ),
                       const SizedBox(height: 80),
                     ],
                   ),
-                ),
+                )
               ],
-
-// Review List
             ),
           ),
         ],
       ),
-      bottomSheet: Padding(
-        padding: const EdgeInsets.all(8),
-        child: InkWell(
-          onTap: isInCart
-              ? null
-              : () {
+      bottomSheet: isInCart
+          ? Padding(
+              padding: const EdgeInsets.all(8),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return CartScreen();
+                  }));
+                },
+                child: Container(
+                  width: double.infinity,
+                  height: 46,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF3B54EE),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Center(
+                    child: Text(
+                      "Thanh toán",
+                      style: GoogleFonts.mochiyPopOne(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(8),
+              child: InkWell(
+                onTap: () {
                   cartProviderData.addProductToCart(
                     productName: widget.product.productName,
                     productPrice: widget.product.productPrice,
@@ -496,28 +595,28 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                     description: widget.product.description,
                     fullName: widget.product.fullName,
                   );
-                  showSnackBar(context, 'Added to cart');
+                  showSnackBar(context, 'Đã thêm vào giỏ hàng');
                 },
-          child: Container(
-            width: double.infinity,
-            height: 46,
-            decoration: BoxDecoration(
-              color: isInCart ? Colors.grey : const Color(0xFF3B54EE),
-              borderRadius: BorderRadius.circular(24),
-            ),
-            child: Center(
-              child: Text(
-                isInCart ? "GO TO CART" : "ADD TO CART",
-                style: GoogleFonts.mochiyPopOne(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
+                child: Container(
+                  width: double.infinity,
+                  height: 46,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF3B54EE),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Center(
+                    child: Text(
+                      "Thêm vào giỏ hàng",
+                      style: GoogleFonts.mochiyPopOne(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }
@@ -529,19 +628,19 @@ Widget buildStarRating(double rating) {
   return Row(
     children: List.generate(5, (index) {
       if (index < fullStars) {
-        return Icon(
+        return const Icon(
           Icons.star,
           color: Colors.amber,
           size: 20,
         );
       } else if (index == fullStars && partialStar > 0) {
-        return Icon(
+        return const Icon(
           Icons.star_half,
           color: Colors.amber,
           size: 20,
         );
       } else {
-        return Icon(
+        return const Icon(
           Icons.star_border,
           color: Colors.amber,
           size: 20,

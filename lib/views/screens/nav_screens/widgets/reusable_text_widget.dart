@@ -1,3 +1,4 @@
+import 'package:ecomerce_shop_app/views/screens/nav_screens/category_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -20,10 +21,42 @@ class ReusableTextWidget extends StatelessWidget {
             style: GoogleFonts.quicksand(
                 fontSize: 16, fontWeight: FontWeight.bold),
           ),
-          Text(
-            subtitle,
-            style: GoogleFonts.quicksand(
-                fontWeight: FontWeight.bold, color: Colors.blue),
+          InkWell(
+            onTap: () {
+              if (title.toString() == 'Categories') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return const CategoryScreen();
+                    },
+                  ),
+                );
+              } else if (title.toString() == 'Top Rated Products') {
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) {
+                //       return CategoryScreen();
+                //     },
+                //   ),
+                // );
+              } else {
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) {
+                //       return CategoryScreen();
+                //     },
+                //   ),
+                // );
+              }
+            },
+            child: Text(
+              subtitle,
+              style: GoogleFonts.quicksand(
+                  fontWeight: FontWeight.bold, color: Colors.blue),
+            ),
           )
         ],
       ),

@@ -32,13 +32,13 @@ class _TopRatedProductWidgetItemState
         );
       },
       child: Container(
-        width: 170,
+        width: 150,
         margin: const EdgeInsets.symmetric(horizontal: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              height: 150,
+              height: 130,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(34),
               ),
@@ -48,8 +48,8 @@ class _TopRatedProductWidgetItemState
                     borderRadius: BorderRadius.circular(16),
                     child: Image.network(
                       widget.product.images[0],
-                      height: 150,
-                      width: 150,
+                      height: 130,
+                      width: 130,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -79,7 +79,7 @@ class _TopRatedProductWidgetItemState
                 ),
                 widget.product.averageRating == 0
                     ? Text(
-                        'No review yet',
+                        'Chưa có đánh giá',
                         style: GoogleFonts.montserrat(
                           fontWeight: FontWeight.bold,
                           fontSize: 12,

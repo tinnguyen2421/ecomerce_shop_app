@@ -130,7 +130,7 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen> {
                           ),
                           subcategories.isNotEmpty
                               ? GridView.builder(
-                                  physics: NeverScrollableScrollPhysics(),
+                                  physics: const NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
                                   itemCount: subcategories.length,
                                   gridDelegate:

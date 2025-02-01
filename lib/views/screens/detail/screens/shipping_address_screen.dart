@@ -72,7 +72,7 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
         backgroundColor: Colors.white.withOpacity(0.96),
         elevation: 0,
         title: Text(
-          'Delivery',
+          'Địa chỉ giao hàng',
           style: GoogleFonts.montserrat(
             fontWeight: FontWeight.w500,
             letterSpacing: 1.7,
@@ -87,7 +87,7 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
             child: Column(
               children: [
                 Text(
-                  'where will your order\n be shipped',
+                  'Hãy chọn nơi đơn hàng\n được giao đến',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.montserrat(
                     fontSize: 18,
@@ -99,13 +99,13 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
                   controller: _stateController,
                   validator: (value) {
                     if (value!.isEmpty) {
-                      return "please enter state";
+                      return "Vui lòng nhập tỉnh/thành";
                     } else {
                       return null;
                     }
                   },
                   decoration: const InputDecoration(
-                    labelText: 'State',
+                    labelText: 'Tỉnh/Thành',
                   ),
                 ),
                 const SizedBox(
@@ -115,13 +115,13 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
                   controller: _cityController,
                   validator: (value) {
                     if (value!.isEmpty) {
-                      return "please enter city";
+                      return "Vui lòng nhập Quận/Huyện";
                     } else {
                       return null;
                     }
                   },
                   decoration: const InputDecoration(
-                    labelText: 'City',
+                    labelText: 'Quận/Huyện',
                   ),
                 ),
                 const SizedBox(
@@ -131,13 +131,13 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
                   controller: _localityController,
                   validator: (value) {
                     if (value!.isEmpty) {
-                      return "please enter Locality";
+                      return "Vui lòng nhập địa chỉ cụ thể";
                     } else {
                       return null;
                     }
                   },
                   decoration: const InputDecoration(
-                    labelText: 'Locality',
+                    labelText: 'Địa chỉ',
                   ),
                 ),
               ],
@@ -187,7 +187,7 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
             ),
             child: Center(
               child: Text(
-                'Save ',
+                'Lưu ',
                 style: GoogleFonts.montserrat(
                   color: Colors.white,
                   fontSize: 18,

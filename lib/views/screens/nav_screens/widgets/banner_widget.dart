@@ -31,13 +31,17 @@ class _BannerWidgetState extends ConsumerState<BannerWidget> {
   Widget build(BuildContext context) {
     final banners = ref.watch(bannerProvider);
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(0.0),
       child: Container(
         width: MediaQuery.of(context).size.width,
-        height: 170,
+        height: 150,
         decoration: BoxDecoration(
-          color: const Color(0xFFF7F7F7),
-          borderRadius: BorderRadius.circular(4),
+          image: const DecorationImage(
+            image: AssetImage(
+                'assets/icons/searchBanner.jpeg'), // Background image
+            fit: BoxFit.cover,
+          ),
+          borderRadius: BorderRadius.circular(0),
         ),
         child: PageView.builder(
           itemCount: banners.length,
@@ -46,9 +50,7 @@ class _BannerWidgetState extends ConsumerState<BannerWidget> {
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(
-                  10,
-                ),
+                borderRadius: BorderRadius.circular(10),
                 child: Image.network(
                   banner.image,
                   fit: BoxFit.cover,

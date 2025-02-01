@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../detail/screens/search_product_screen.dart';
+
 class HeaderWidget extends StatelessWidget {
   const HeaderWidget({super.key});
 
@@ -11,17 +13,27 @@ class HeaderWidget extends StatelessWidget {
       child: Stack(
         children: [
           Image.asset(
-            'assets/icons/background.png',
+            'assets/icons/searchBanner.jpeg',
             width: MediaQuery.of(context).size.width,
             fit: BoxFit.cover,
           ),
           Positioned(
-            left: 48,
-            top: 68,
+            left: 10,
+            top: 60,
             child: SizedBox(
-              width: 250,
+              width: 290,
               height: 40,
               child: TextField(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return SearchProductScreen();
+                      },
+                    ),
+                  );
+                },
                 decoration: InputDecoration(
                   hintText: 'Tìm kiếm gì đó',
                   hintStyle: const TextStyle(
@@ -54,13 +66,13 @@ class HeaderWidget extends StatelessWidget {
           ),
           Positioned(
             left: 311,
-            top: 78,
+            top: 66,
             child: Material(
               type: MaterialType.transparency,
               child: InkWell(
                 onTap: () {},
-                overlayColor: MaterialStateProperty.all(
-                  Color(0x07F7F),
+                overlayColor: WidgetStateProperty.all(
+                  const Color(0x07F7F),
                 ),
                 child: Ink(
                   width: 31,
@@ -75,7 +87,7 @@ class HeaderWidget extends StatelessWidget {
           ),
           Positioned(
             left: 354,
-            top: 78,
+            top: 66,
             child: Material(
               type: MaterialType.transparency,
               child: InkWell(

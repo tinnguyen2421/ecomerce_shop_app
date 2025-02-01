@@ -21,12 +21,12 @@ class HomeScreen extends StatelessWidget {
           children: [
             BannerWidget(),
             CategoryItemWidget(),
-            ReusableTextWidget(title: 'Popular Products', subtitle: 'View all'),
-            PopularProductWidget(),
             ReusableTextWidget(
-                title: 'Top Rated Products', subtitle: 'View all'),
+                title: 'Sản phẩm phổ biến', subtitle: 'Xem tất cả'),
+            PopularProductWidget(),
+            ReusableTextWidget(title: 'Top đánh giá', subtitle: 'Xem tất cả'),
             TopRatedProductWidget(),
-            ReusableTextWidget(title: 'All product', subtitle: ''),
+            ReusableTextWidget(title: 'Tất cả sản phẩm', subtitle: ''),
             AllProductWidget(),
           ],
         ),

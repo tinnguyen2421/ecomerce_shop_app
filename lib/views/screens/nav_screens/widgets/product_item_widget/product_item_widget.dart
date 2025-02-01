@@ -75,13 +75,33 @@ class _ProductItemWidgetState extends ConsumerState<ProductItemWidget> {
                         showSnackBar(
                             context, 'added ${widget.product.productName}');
                       },
-                      child: favoriteProviderData.getFavoriteItems
-                              .containsKey(widget.product.id)
-                          ? const Icon(
-                              Icons.favorite,
-                              color: Colors.red,
-                            )
-                          : const Icon(Icons.favorite_border),
+                      child: Container(
+                        padding: const EdgeInsets.all(
+                          6,
+                        ),
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 4,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: favoriteProviderData.getFavoriteItems
+                                .containsKey(widget.product.id)
+                            ? const Icon(
+                                Icons.favorite,
+                                color: Colors.red,
+                                size: 24,
+                              )
+                            : const Icon(
+                                Icons.favorite_border,
+                                size: 24,
+                              ),
+                      ),
                     ),
                   ),
                   Positioned(
@@ -138,7 +158,7 @@ class _ProductItemWidgetState extends ConsumerState<ProductItemWidget> {
                 ),
                 widget.product.averageRating == 0
                     ? Text(
-                        'No review yet',
+                        'Chưa có đánh giá',
                         style: GoogleFonts.montserrat(
                           fontWeight: FontWeight.bold,
                           fontSize: 12,
